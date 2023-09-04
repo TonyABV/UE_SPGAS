@@ -17,11 +17,12 @@ class STUDYPROJECT_API USPAnimInstance : public UAnimInstance
 protected:
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
-	class UBlendSpace* GetLocomotionBlendspace() const;
+    class UBlendSpace* GetLocomotionBlendSpace() const;
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
-	class UAnimSequenceBase* GetIdleAnimation() const;
+    class UAnimSequenceBase* GetIdleAnimation() const;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animation")
 	class UCharacterAnimationDataAsset* DefaultAnimationData;
+	
 };

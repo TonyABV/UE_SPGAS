@@ -47,6 +47,10 @@ class AStudyProjectCharacter : public ACharacter, public IAbilitySystemInterface
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	/** Crouch Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* CrouchAction;
+
 public:
 
 	AStudyProjectCharacter(const FObjectInitializer& ObjectInitializer);
@@ -68,6 +72,9 @@ public:
 	USPFootstepsComponent* GetFootStepComponent() const { return FootstepsComponent; }
 
 	virtual void Landed(const FHitResult& Hit) override;
+
+	virtual void OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+    virtual void OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
 
 protected:
 	
@@ -99,17 +106,21 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+    void OnCrouch(const FInputActionValue& InputActionValue);
+	
 	virtual void InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication = false);
 
+    void OuStopCrouch(const FInputActionValue& InputActionValue);
+	
 	UPROPERTY(EditDefaultsOnly)
 	UCharacterDataAsset* CharacterDataAsset;
 
 	UPROPERTY(BlueprintReadOnly)
 	USPFootstepsComponent* FootstepsComponent;
 
-protected:
-	// APawn interface
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+protected:// APawn interface
+
+    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	// To add mapping context
 	virtual void BeginPlay();
@@ -120,19 +131,26 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	// Gameplay Events
-
-protected:
+	
+protected: // Gameplay Events
 
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag JumpEventTag;
 
-	// Gameplay Tags
+	
 
-protected:
+protected: // Gameplay Tags
 
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTagContainer InAirTag;
+
+	UPROPERTY(EditDefaultsOnly)
+	FGameplayTagContainer CrouchTag;
+
+protected: // Gameplay Effects
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UGameplayEffect> CrouchStateEffect;
 
 };
 

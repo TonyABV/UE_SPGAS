@@ -12,6 +12,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemLog.h"
 #include "AbilitySystem/AttributeSet/SPAttributeSetBase.h"
 #include "AbilitySystem/Components/SP_AbilitySystemComponentBase.h"
 #include "Net/UnrealNetwork.h"
@@ -127,6 +128,38 @@ void AStudyProjectCharacter::Landed(const FHitResult& Hit)
 	}
 }
 
+void AStudyProjectCharacter::OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
+{
+    Super::OnStartCrouch(HalfHeightAdjust, ScaledHalfHeightAdjust);
+
+	if (!CrouchStateEffect.Get()) return;;
+
+    if (AbilitySystemComponent)
+    {
+        FGameplayEffectSpecHandle SpecHandle =
+            AbilitySystemComponent->MakeOutgoingSpec(CrouchStateEffect, 1, AbilitySystemComponent->MakeEffectContext());
+
+        if (SpecHandle.IsValid())
+        {
+            FActiveGameplayEffectHandle ActiveGEHandle = //
+				AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+            if (!ActiveGEHandle.WasSuccessfullyApplied())
+            {
+                ABILITY_LOG(Log, TEXT("Ability %s failed to apply croush effect %s"), *GetNameSafe(CrouchStateEffect));
+            }
+        }
+    }
+}
+
+void AStudyProjectCharacter::OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
+{
+    if (AbilitySystemComponent)
+    {
+        AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(CrouchStateEffect, AbilitySystemComponent);
+    }
+    Super::OnEndCrouch(HalfHeightAdjust, ScaledHalfHeightAdjust);
+}
+
 void AStudyProjectCharacter::GiveAbilities()
 {
 	if (HasAuthority() && AbilitySystemComponent)
@@ -204,6 +237,9 @@ void AStudyProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AStudyProjectCharacter::Look);
 
+		//Crouch
+        EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &AStudyProjectCharacter::OnCrouch);
+        EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AStudyProjectCharacter::OuStopCrouch);
 	}
 
 }
@@ -266,6 +302,22 @@ void AStudyProjectCharacter::Look(const FInputActionValue& Value)
 void AStudyProjectCharacter::InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication)
 {
 
+}
+
+void AStudyProjectCharacter::OnCrouch(const FInputActionValue& InputActionValue)
+{
+    if (AbilitySystemComponent)
+    {
+        AbilitySystemComponent->TryActivateAbilitiesByTag(CrouchTag, true);
+    }
+}
+
+void AStudyProjectCharacter::OuStopCrouch(const FInputActionValue& InputActionValue)
+{
+    if (AbilitySystemComponent)
+    {
+        AbilitySystemComponent->CancelAbilities(&CrouchTag);
+    }
 }
 
 

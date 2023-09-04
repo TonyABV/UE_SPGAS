@@ -6,22 +6,36 @@
 #include "Animation/AnimSequenceBase.h"
 #include "DataAssets/CharacterAnimationDataAsset.h"
 
-UBlendSpace* USPAnimInstance::GetLocomotionBlendspace() const
+UBlendSpace* USPAnimInstance::GetLocomotionBlendSpace() const
 {
-	AStudyProjectCharacter* Character = Cast<AStudyProjectCharacter>(GetOwningActor());
+	const AStudyProjectCharacter* Character = Cast<AStudyProjectCharacter>(GetOwningActor());
 	if(Character && Character->GetCharacterData().CharacterAnimData)
 	{
-		return Character->GetCharacterData().CharacterAnimData->CharacterAnimationData.MovementBlendspace;
+        if (Character->bIsCrouched)
+        {
+            return Character->GetCharacterData().CharacterAnimData->CharacterAnimationData.CrouchingBlendSpace;
+        }
+        else
+        {
+            return Character->GetCharacterData().CharacterAnimData->CharacterAnimationData.MovementBlendSpace;
+        }
 	}
-	return DefaultAnimationData ? DefaultAnimationData->CharacterAnimationData.MovementBlendspace : nullptr;
+    return DefaultAnimationData ? DefaultAnimationData->CharacterAnimationData.MovementBlendSpace : nullptr;
 }
 
 UAnimSequenceBase* USPAnimInstance::GetIdleAnimation() const
 {
-	AStudyProjectCharacter* Character = Cast<AStudyProjectCharacter>(GetOwningActor());
+	const AStudyProjectCharacter* Character = Cast<AStudyProjectCharacter>(GetOwningActor());
 	if(Character && Character->GetCharacterData().CharacterAnimData)
 	{
-		return Character->GetCharacterData().CharacterAnimData->CharacterAnimationData.IdleAnimationAsset;
+        if (Character->bIsCrouched)
+        {
+            return Character->GetCharacterData().CharacterAnimData->CharacterAnimationData.CrouchIdleAnimationAsset;
+        }
+        else
+        {
+            return Character->GetCharacterData().CharacterAnimData->CharacterAnimationData.IdleAnimationAsset;
+        }
 	}
 	return DefaultAnimationData ? DefaultAnimationData->CharacterAnimationData.IdleAnimationAsset : nullptr;
 }

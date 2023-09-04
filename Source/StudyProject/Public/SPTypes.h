@@ -27,10 +27,16 @@ struct FCharacterAnimationData
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly)
-	class UBlendSpace* MovementBlendspace = nullptr;
+	class UBlendSpace* MovementBlendSpace = nullptr;
 
 	UPROPERTY(EditDefaultsOnly)
 	class UAnimSequenceBase* IdleAnimationAsset = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	class UBlendSpace* CrouchingBlendSpace = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	class UAnimSequenceBase* CrouchIdleAnimationAsset = nullptr;
 
 };
 
