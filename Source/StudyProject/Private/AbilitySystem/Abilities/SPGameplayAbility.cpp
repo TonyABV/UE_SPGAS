@@ -14,25 +14,7 @@ void USPGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	FGameplayEffectContextHandle ContextHandle = ActorInfo->AbilitySystemComponent->MakeEffectContext();
-
-	for(TSubclassOf<UGameplayEffect> GameplayEffect : OngoingEffectsToJustApplyOnStart)
-	{
-		if(!GameplayEffect.Get()) continue;
-
-		if(UAbilitySystemComponent* AbilitySystem = ActorInfo->AbilitySystemComponent.Get())
-		{
-			FGameplayEffectSpecHandle SpecHandle = AbilitySystem->MakeOutgoingSpec(GameplayEffect, 1, ContextHandle);
-			if (SpecHandle.IsValid())
-			{
-				FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystem->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
-				if (!ActiveGEHandle.WasSuccessfullyApplied())
-				{
-					ABILITY_LOG(Log, TEXT("Ability %s failed to apply startup effect %s"), *GetNameSafe(GameplayEffect));
-				}
-			}
-		}
-	}
-
+	
 	if(IsInstantiated())
 	{
 		for (TSubclassOf<UGameplayEffect> GameplayEffect : OngoingEffectsToJustApplyOnStart)
@@ -56,6 +38,26 @@ void USPGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 			}
 		}
 	}
+    else
+    {
+        for (TSubclassOf<UGameplayEffect> GameplayEffect : OngoingEffectsToJustApplyOnStart)
+        {
+            if (!GameplayEffect.Get()) continue;
+
+            if (UAbilitySystemComponent* AbilitySystem = ActorInfo->AbilitySystemComponent.Get())
+            {
+                FGameplayEffectSpecHandle SpecHandle = AbilitySystem->MakeOutgoingSpec(GameplayEffect, 1, ContextHandle);
+                if (SpecHandle.IsValid())
+                {
+                    FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystem->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+                    if (!ActiveGEHandle.WasSuccessfullyApplied())
+                    {
+                        ABILITY_LOG(Log, TEXT("Ability %s failed to apply startup effect %s"), *GetNameSafe(GameplayEffect));
+                    }
+                }
+            }
+        }
+    }
 }
 
 void USPGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

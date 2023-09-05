@@ -51,6 +51,10 @@ class AStudyProjectCharacter : public ACharacter, public IAbilitySystemInterface
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* CrouchAction;
 
+	/** Crouch Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* SprintAction;
+
 public:
 
 	AStudyProjectCharacter(const FObjectInitializer& ObjectInitializer);
@@ -75,6 +79,12 @@ public:
 
 	virtual void OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
     virtual void OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+
+	UPROPERTY(EditDefaultsOnly)
+	UCharacterDataAsset* CharacterDataAsset;
+
+	UPROPERTY(BlueprintReadOnly)
+	USPFootstepsComponent* FootstepsComponent;
 
 protected:
 	
@@ -108,15 +118,13 @@ protected:
 
     void OnCrouch(const FInputActionValue& InputActionValue);
 	
-	virtual void InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication = false);
-
     void OuStopCrouch(const FInputActionValue& InputActionValue);
 	
-	UPROPERTY(EditDefaultsOnly)
-	UCharacterDataAsset* CharacterDataAsset;
-
-	UPROPERTY(BlueprintReadOnly)
-	USPFootstepsComponent* FootstepsComponent;
+    void OnSprint(const FInputActionValue& InputActionValue);
+	
+    void OuStopSprint(const FInputActionValue& InputActionValue);
+	
+	virtual void InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication = false);
 
 protected:// APawn interface
 
@@ -136,21 +144,31 @@ protected: // Gameplay Events
 
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag JumpEventTag;
-
 	
 
 protected: // Gameplay Tags
 
 	UPROPERTY(EditDefaultsOnly)
-	FGameplayTagContainer InAirTag;
+	FGameplayTagContainer InAirTags;
 
 	UPROPERTY(EditDefaultsOnly)
-	FGameplayTagContainer CrouchTag;
+	FGameplayTagContainer CrouchTags;
+
+	UPROPERTY(EditDefaultsOnly)
+	FGameplayTagContainer SprintTags;
 
 protected: // Gameplay Effects
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayEffect> CrouchStateEffect;
+
+protected: //Delegates
+
+	FDelegateHandle MaxMoveSpeedChangedDelegateHandle;
+
+private:
+
+	void OnMaxMovementSpeedChanged(const FOnAttributeChangeData& Data);
 
 };
 

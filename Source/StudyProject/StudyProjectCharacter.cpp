@@ -64,11 +64,10 @@ Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(
 	//AbilitySystem
 
 	AbilitySystemComponent = CreateDefaultSubobject<USP_AbilitySystemComponentBase>(TEXT("AbilitySystem"));
-	if(AbilitySystemComponent)
-	{
-		AbilitySystemComponent->SetIsReplicated(true);
-		AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
-	}
+	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxMovementSpeedAttribute())
+        .AddUObject(this, &AStudyProjectCharacter::OnMaxMovementSpeedChanged);
 
 	AttributeSet = CreateDefaultSubobject<USPAttributeSetBase>(TEXT("AttributeSet"));
 
@@ -124,7 +123,7 @@ void AStudyProjectCharacter::Landed(const FHitResult& Hit)
 
 	if(AbilitySystemComponent)
 	{
-		AbilitySystemComponent->RemoveActiveEffectsWithTags(InAirTag);
+		AbilitySystemComponent->RemoveActiveEffectsWithTags(InAirTags);
 	}
 }
 
@@ -164,7 +163,7 @@ void AStudyProjectCharacter::GiveAbilities()
 {
 	if (HasAuthority() && AbilitySystemComponent)
 	{
-		for(auto DefaultAbility : CharacterData.Abilities)
+		for(const auto DefaultAbility : CharacterData.Abilities)
 		{
 			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(DefaultAbility));
 		}
@@ -178,7 +177,7 @@ void AStudyProjectCharacter::ApplyStartupEffects()
 		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
 		EffectContext.AddSourceObject(this);
 
-		for(auto CharacterEffect : CharacterData.Effects)
+		for(const auto CharacterEffect : CharacterData.Effects)
 		{
 			ApplayGameplayEffectToSelf(CharacterEffect, EffectContext);
 		}
@@ -219,6 +218,14 @@ void AStudyProjectCharacter::BeginPlay()
 	}
 }
 
+void AStudyProjectCharacter::OnMaxMovementSpeedChanged(const FOnAttributeChangeData& Data)
+{
+    if (GetCharacterMovement())
+    {
+        GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -240,6 +247,10 @@ void AStudyProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 		//Crouch
         EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &AStudyProjectCharacter::OnCrouch);
         EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AStudyProjectCharacter::OuStopCrouch);
+
+		//Sprint
+        EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AStudyProjectCharacter::OnSprint);
+        EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AStudyProjectCharacter::OuStopSprint);
 	}
 
 }
@@ -308,7 +319,7 @@ void AStudyProjectCharacter::OnCrouch(const FInputActionValue& InputActionValue)
 {
     if (AbilitySystemComponent)
     {
-        AbilitySystemComponent->TryActivateAbilitiesByTag(CrouchTag, true);
+        AbilitySystemComponent->TryActivateAbilitiesByTag(CrouchTags, true);
     }
 }
 
@@ -316,7 +327,23 @@ void AStudyProjectCharacter::OuStopCrouch(const FInputActionValue& InputActionVa
 {
     if (AbilitySystemComponent)
     {
-        AbilitySystemComponent->CancelAbilities(&CrouchTag);
+        AbilitySystemComponent->CancelAbilities(&CrouchTags);
+    }
+}
+
+void AStudyProjectCharacter::OnSprint(const FInputActionValue& InputActionValue)
+{
+    if (AbilitySystemComponent)
+    {
+        AbilitySystemComponent->TryActivateAbilitiesByTag(SprintTags, true);
+    }
+}
+
+void AStudyProjectCharacter::OuStopSprint(const FInputActionValue& InputActionValue)
+{
+    if (AbilitySystemComponent)
+    {
+        AbilitySystemComponent->CancelAbilities(&SprintTags);
     }
 }
 
