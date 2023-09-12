@@ -5,9 +5,10 @@
 #include "StudyProjectCharacter.h"
 #include "ActorComponents/SPFootstepsComponent.h"
 
-void USPAnimNotify_Step::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
+void USPAnimNotify_Step::Notify(
+    USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
-	Super::Notify(MeshComp, Animation);
+	Super::Notify(MeshComp, Animation, EventReference);
 
 	if (!MeshComp) return;
 

@@ -17,7 +17,7 @@ void USPGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	
 	if(IsInstantiated())
 	{
-		for (TSubclassOf<UGameplayEffect> GameplayEffect : OngoingEffectsToJustApplyOnStart)
+		for (TSubclassOf<UGameplayEffect> GameplayEffect : OngoingEffectsToRemoveOnEnd)
 		{
 			if (!GameplayEffect.Get()) continue;
 			if (UAbilitySystemComponent* AbilitySystem = ActorInfo->AbilitySystemComponent.Get())
@@ -25,7 +25,8 @@ void USPGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 				FGameplayEffectSpecHandle SpecHandle = ActorInfo->AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, 1, ContextHandle);
 				if (SpecHandle.IsValid())
 				{
-					FActiveGameplayEffectHandle ActiveGEHandle = ActorInfo->AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+					FActiveGameplayEffectHandle ActiveGEHandle = //
+						ActorInfo->AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 					if (!ActiveGEHandle.WasSuccessfullyApplied())
 					{
 						ABILITY_LOG(Log, TEXT("Ability %s failed to apply runtime effect %s"), *GetNameSafe(GameplayEffect));
@@ -38,22 +39,20 @@ void USPGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 			}
 		}
 	}
-    else
-    {
-        for (TSubclassOf<UGameplayEffect> GameplayEffect : OngoingEffectsToJustApplyOnStart)
-        {
-            if (!GameplayEffect.Get()) continue;
 
-            if (UAbilitySystemComponent* AbilitySystem = ActorInfo->AbilitySystemComponent.Get())
+    for (TSubclassOf<UGameplayEffect> GameplayEffect : OngoingEffectsToJustApplyOnStart)
+    {
+        if (!GameplayEffect.Get()) continue;
+
+        if (UAbilitySystemComponent* AbilitySystem = ActorInfo->AbilitySystemComponent.Get())
+        {
+            FGameplayEffectSpecHandle SpecHandle = AbilitySystem->MakeOutgoingSpec(GameplayEffect, 1, ContextHandle);
+            if (SpecHandle.IsValid())
             {
-                FGameplayEffectSpecHandle SpecHandle = AbilitySystem->MakeOutgoingSpec(GameplayEffect, 1, ContextHandle);
-                if (SpecHandle.IsValid())
+                FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystem->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+                if (!ActiveGEHandle.WasSuccessfullyApplied())
                 {
-                    FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystem->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
-                    if (!ActiveGEHandle.WasSuccessfullyApplied())
-                    {
-                        ABILITY_LOG(Log, TEXT("Ability %s failed to apply startup effect %s"), *GetNameSafe(GameplayEffect));
-                    }
+                    ABILITY_LOG(Log, TEXT("Ability %s failed to apply startup effect %s"), *GetNameSafe(GameplayEffect));
                 }
             }
         }

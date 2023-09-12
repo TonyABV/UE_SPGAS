@@ -9,6 +9,7 @@
 #include "AbilitySystemInterface.h"
 #include "SPTypes.h"
 #include "DataAssets/CharacterDataAsset.h"
+#include "ActorComponents/SPMotionWarpingComponent.h"
 #include "StudyProjectCharacter.generated.h"
 
 class USP_AbilitySystemComponentBase;
@@ -17,6 +18,8 @@ class USPAttributeSetBase;
 class UGameplayEffect;
 class UGameplayAbility;
 class USPFootstepsComponent;
+class USPMotionWarpingComponent;
+class USPCharacterMovementComponent;
 
 UCLASS(config=Game)
 class AStudyProjectCharacter : public ACharacter, public IAbilitySystemInterface
@@ -55,6 +58,11 @@ class AStudyProjectCharacter : public ACharacter, public IAbilitySystemInterface
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* SprintAction;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = MotionWarp, meta = (AllowPrivateAccess = "true"))
+    USPMotionWarpingComponent* MotionWarpingComponent;
+
+	USPCharacterMovementComponent* SPMovementComponent = nullptr;
+
 public:
 
 	AStudyProjectCharacter(const FObjectInitializer& ObjectInitializer);
@@ -85,6 +93,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	USPFootstepsComponent* FootstepsComponent;
+
+	UFUNCTION(BlueprintCallable)
+    USPMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
 
 protected:
 	

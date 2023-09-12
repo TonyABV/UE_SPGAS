@@ -18,7 +18,7 @@
 #include "Net/UnrealNetwork.h"
 #include "ActorComponents/SPCharacterMovementComponent.h"
 #include "ActorComponents/SPFootstepsComponent.h"
-#include "ActorComponents/SPFootstepsComponent.h"
+#include "ActorComponents/SPMotionWarpingComponent.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -47,6 +47,8 @@ Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
+	SPMovementComponent = Cast<USPCharacterMovementComponent>(GetCharacterMovement());
+
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -72,6 +74,10 @@ Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(
 	AttributeSet = CreateDefaultSubobject<USPAttributeSetBase>(TEXT("AttributeSet"));
 
 	FootstepsComponent = CreateDefaultSubobject<USPFootstepsComponent>(TEXT("FootstepsComponent"));
+
+	//MotionWarping
+
+	MotionWarpingComponent = CreateDefaultSubobject<USPMotionWarpingComponent>("MotionWarping");
 }
 
 bool AStudyProjectCharacter::ApplayGameplayEffectToSelf(TSubclassOf<UGameplayEffect> Effect,
@@ -235,7 +241,7 @@ void AStudyProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
 		//Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AStudyProjectCharacter::OnJump);
+        EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AStudyProjectCharacter::OnJump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AStudyProjectCharacter::OnStopJumping);
 
 		//Moving
@@ -245,7 +251,7 @@ void AStudyProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AStudyProjectCharacter::Look);
 
 		//Crouch
-        EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &AStudyProjectCharacter::OnCrouch);
+        EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AStudyProjectCharacter::OnCrouch);
         EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AStudyProjectCharacter::OuStopCrouch);
 
 		//Sprint
@@ -262,12 +268,14 @@ void AStudyProjectCharacter::OnRep_CharacterData()
 
 void AStudyProjectCharacter::OnJump(const FInputActionValue& InputActionValue)
 {
-	FGameplayEventData Payload;
+	/*FGameplayEventData Payload;
 
 	Payload.Instigator = this;
 	Payload.EventTag = JumpEventTag;
 
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, JumpEventTag, Payload);
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, JumpEventTag, Payload);*/
+
+	SPMovementComponent->TryTraversal(AbilitySystemComponent);
 }
 
 void AStudyProjectCharacter::OnStopJumping(const FInputActionValue& InputActionValue)
