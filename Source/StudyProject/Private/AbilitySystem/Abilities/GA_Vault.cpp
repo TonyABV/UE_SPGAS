@@ -32,7 +32,7 @@ bool UGA_Vault::CommitCheck(const FGameplayAbilitySpecHandle Handle, const FGame
     TArray<AActor*> ActorsToIgnore = {StudyProjectCharacter};
 
     static const auto CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("ShowDebugTraversal"));
-    const bool bShowTraversal = CVar->GetInt() > 0 ? true : false;
+    const bool bShowTraversal = CVar->GetInt() > 0;
 
     EDrawDebugTrace::Type DebugDrawType = bShowTraversal ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
     
