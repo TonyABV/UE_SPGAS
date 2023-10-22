@@ -20,6 +20,7 @@ class UGameplayAbility;
 class USPFootstepsComponent;
 class USPMotionWarpingComponent;
 class USPCharacterMovementComponent;
+class UInventoryComponent;
 
 UCLASS(config=Game)
 class AStudyProjectCharacter : public ACharacter, public IAbilitySystemInterface
@@ -60,6 +61,9 @@ class AStudyProjectCharacter : public ACharacter, public IAbilitySystemInterface
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = MotionWarp, meta = (AllowPrivateAccess = "true"))
     USPMotionWarpingComponent* MotionWarpingComponent;
+
+	UPROPERTY(VisibleAnywhere, Replicated, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UInventoryComponent* InventoryComponent;
 
 	USPCharacterMovementComponent* SPMovementComponent = nullptr;
 

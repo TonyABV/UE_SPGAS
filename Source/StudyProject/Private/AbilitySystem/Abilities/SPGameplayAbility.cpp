@@ -83,5 +83,6 @@ void USPGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 
 AStudyProjectCharacter* USPGameplayAbility::GetSPCharacter() const
 {
-	return Cast<AStudyProjectCharacter>(GetAvatarActorFromActorInfo());
+    AStudyProjectCharacter* Result = Cast<AStudyProjectCharacter>(GetAvatarActorFromActorInfo());
+    return Result;
 }

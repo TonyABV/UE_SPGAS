@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "SPTypes.generated.h"
 
+class AItemActor;
+
 USTRUCT(BlueprintType)
 struct FCharacterData
 {
@@ -45,4 +47,30 @@ enum class EFoot : uint8
 {
 	Left UMETA(DisplayName = "Left"),
 	Right UMETA(DisplayName = "Right")
+};
+
+UCLASS(BlueprintType, Blueprintable)
+class UItemStaticData : public UObject
+{
+    GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    FName Name;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    TSubclassOf<AItemActor> ItemActorClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    FName AttachmentSocket = NAME_None;
+
+};
+
+UENUM(BlueprintType)
+enum class EItemState : uint8
+{
+    None UMETA(DisplayName = "None"),
+    Equipped UMETA(DisplayName = "Equipped"),
+    Dropped UMETA(DisplayName = "Dropped")
 };

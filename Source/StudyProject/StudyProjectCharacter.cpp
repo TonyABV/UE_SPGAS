@@ -15,6 +15,7 @@
 #include "AbilitySystemLog.h"
 #include "AbilitySystem/AttributeSet/SPAttributeSetBase.h"
 #include "AbilitySystem/Components/SP_AbilitySystemComponentBase.h"
+#include "ActorComponents/InventoryComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "ActorComponents/SPCharacterMovementComponent.h"
 #include "ActorComponents/SPFootstepsComponent.h"
@@ -78,6 +79,10 @@ Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(
 	//MotionWarping
 
 	MotionWarpingComponent = CreateDefaultSubobject<USPMotionWarpingComponent>("MotionWarping");
+
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>("Inventory");
+    InventoryComponent->SetIsReplicated(true);
+
 }
 
 bool AStudyProjectCharacter::ApplayGameplayEffectToSelf(TSubclassOf<UGameplayEffect> Effect,
@@ -105,6 +110,7 @@ void AStudyProjectCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME_CONDITION_NOTIFY(AStudyProjectCharacter, CharacterData, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME(AStudyProjectCharacter, InventoryComponent);
 }
 
 void AStudyProjectCharacter::SetCharacterData(const FCharacterData& InCharacterData)
