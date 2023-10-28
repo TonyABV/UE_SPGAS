@@ -59,6 +59,15 @@ class AStudyProjectCharacter : public ACharacter, public IAbilitySystemInterface
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* SprintAction;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* EquipNextInputAction;
+    
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* DropItemInputAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* UnequipInputAction;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = MotionWarp, meta = (AllowPrivateAccess = "true"))
     USPMotionWarpingComponent* MotionWarpingComponent;
 
@@ -138,7 +147,13 @@ protected:
     void OnSprint(const FInputActionValue& InputActionValue);
 	
     void OuStopSprint(const FInputActionValue& InputActionValue);
-	
+
+    void OuDropItemTriggered(const FInputActionValue& InputActionValue);
+    	
+    void OnEquipNextTriggered(const FInputActionValue& InputActionValue);
+    	
+    void OuUnqueipTriggered(const FInputActionValue& InputActionValue);
+    	
 	virtual void InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication = false);
 
 protected:// APawn interface

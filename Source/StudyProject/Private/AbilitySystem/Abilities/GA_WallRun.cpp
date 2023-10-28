@@ -31,7 +31,9 @@ void UGA_WallRun::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, cons
 
 void UGA_WallRun::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
-    AStudyProjectCharacter* CharacterAvatar = GetSPCharacter();
+    if(!ActorInfo) return;
+    
+    AStudyProjectCharacter* CharacterAvatar = Cast<AStudyProjectCharacter>(ActorInfo->AvatarActor);
 
     if (CharacterAvatar && CharacterAvatar->GetCapsuleComponent())
     {

@@ -38,7 +38,7 @@ void UInventoryItemInstance::OnEquipped(AActor* InOwner)
         ItemActor = World->SpawnActorDeferred<AItemActor>(GetItemStaticData()->ItemActorClass, SpawnTransform, InOwner);
 
         ItemActor->Init(this);
-
+        ItemActor->OnEquipped();   
         ItemActor->FinishSpawning(SpawnTransform);
 
         ACharacter* Character = Cast<ACharacter>(InOwner);
@@ -48,6 +48,7 @@ void UInventoryItemInstance::OnEquipped(AActor* InOwner)
         }
 
     }
+    bEquipped = true;
 }
 
 void UInventoryItemInstance::OnUnequipped()
@@ -57,6 +58,7 @@ void UInventoryItemInstance::OnUnequipped()
         ItemActor->Destroy();
         ItemActor = nullptr;
     }
+    bEquipped = false;
 }
 
 void UInventoryItemInstance::OnDropped()
@@ -65,6 +67,7 @@ void UInventoryItemInstance::OnDropped()
     {
         ItemActor->OnDropped();
     }
+    bEquipped = false;
 }
 
 void UInventoryItemInstance::OnRep_Equipped()

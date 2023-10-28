@@ -10,47 +10,48 @@
 
 class UInventoryItemInstance;
 class USphereComponent;
+class UItemStaticData;
 
 UCLASS()
 class STUDYPROJECT_API AItemActor : public AActor
 {
-	GENERATED_BODY()
-	
-public:
+    GENERATED_BODY()
 
-	AItemActor();
+public:
+    AItemActor();
 
     virtual void OnEquipped();
     virtual void OnUnequipped();
     virtual void OnDropped();
 
-	virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
+    virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	void Init(UInventoryItemInstance* InInstance);
+    void Init(UInventoryItemInstance* InInstance);
 
     UFUNCTION()
     void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
         int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 protected:
+    virtual void BeginPlay() override;
 
-	virtual void BeginPlay() override;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
     USphereComponent* SphereComponent;
 
-	UPROPERTY(Replicated)
+    UPROPERTY(Replicated)
     UInventoryItemInstance* ItemInstance = nullptr;
 
-	UPROPERTY(Replicated)
+    UPROPERTY(ReplicatedUsing = OnRep_ItemState)
     TEnumAsByte<EItemState> ItemState = EItemState::None;
 
-    FGameplayTag OverlappedEventTag;
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<UItemStaticData> StaticDataClass;
 
-public:	
-
-	virtual void Tick(float DeltaTime) override;
+    UFUNCTION()
+    void OnRep_ItemState();
+public:
+    virtual void Tick(float DeltaTime) override;
 
 };

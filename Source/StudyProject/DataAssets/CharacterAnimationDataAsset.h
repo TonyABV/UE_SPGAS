@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class STUDYPROJECT_API UCharacterAnimationDataAsset : public UDataAsset
+class STUDYPROJECT_API  UCharacterAnimationDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
 

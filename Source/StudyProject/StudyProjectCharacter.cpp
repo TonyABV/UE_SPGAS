@@ -263,6 +263,11 @@ void AStudyProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 		//Sprint
         EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AStudyProjectCharacter::OnSprint);
         EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AStudyProjectCharacter::OuStopSprint);
+
+        EnhancedInputComponent->BindAction(EquipNextInputAction, ETriggerEvent::Started, this, &AStudyProjectCharacter::OnEquipNextTriggered);
+	    EnhancedInputComponent->BindAction(DropItemInputAction, ETriggerEvent::Started, this, &AStudyProjectCharacter::OuDropItemTriggered);
+	    EnhancedInputComponent->BindAction(UnequipInputAction, ETriggerEvent::Started, this, &AStudyProjectCharacter::OuUnqueipTriggered);
+
 	}
 
 }
@@ -359,6 +364,30 @@ void AStudyProjectCharacter::OuStopSprint(const FInputActionValue& InputActionVa
     {
         AbilitySystemComponent->CancelAbilities(&SprintTags);
     }
+}
+
+void AStudyProjectCharacter::OuDropItemTriggered(const FInputActionValue& InputActionValue)
+{
+    FGameplayEventData EventPayload;
+    EventPayload.EventTag = UInventoryComponent::DropItemTag;
+
+    UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, UInventoryComponent::DropItemTag, EventPayload);
+}
+
+void AStudyProjectCharacter::OnEquipNextTriggered(const FInputActionValue& InputActionValue)
+{
+    FGameplayEventData EventPayload;
+    EventPayload.EventTag = UInventoryComponent::EquipNextItemTag;
+
+    UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, UInventoryComponent::EquipNextItemTag, EventPayload);
+}
+
+void AStudyProjectCharacter::OuUnqueipTriggered(const FInputActionValue& InputActionValue)
+{
+    FGameplayEventData EventPayload;
+    EventPayload.EventTag = UInventoryComponent::UnequipItemTag;
+
+    UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, UInventoryComponent::UnequipItemTag, EventPayload);
 }
 
 
