@@ -4,18 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Inventory/InventoryItemInstance.h"
 #include "SPAnimInstance.generated.h"
 
-/**
- * 
- */
+class UItemInstance;
+
 UCLASS()
 class STUDYPROJECT_API USPAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 
 protected:
-
+    const UItemStaticData* GetEquippedItemData() const;
+    
 	UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
     class UBlendSpace* GetLocomotionBlendSpace() const;
 

@@ -110,6 +110,9 @@ public:
 	UFUNCTION(BlueprintCallable)
     USPMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
 
+    
+    UInventoryComponent* GetInventoryComponent() const { return  InventoryComponent; }
+    
 protected:
 	
 	void GiveAbilities();
