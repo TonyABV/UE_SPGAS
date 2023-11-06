@@ -6,6 +6,10 @@
 #include "SPTypes.generated.h"
 
 class AItemActor;
+class UGameplayAbility;
+class USkeletalMesh;
+class UStaticMesh;
+class UAnimMontage;
 
 USTRUCT(BlueprintType)
 struct FCharacterData
@@ -70,7 +74,34 @@ public:
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     FCharacterAnimationData CharacterAnimationData;
-	
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    TArray<TSubclassOf<UGameplayAbility>> GrantedAbilities;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    TArray<TSubclassOf<UGameplayEffect>> OngoingEffects;
+    
+};
+
+UCLASS(BlueprintType, Blueprintable)
+class UWeaponStaticData : public UItemStaticData
+{
+    GENERATED_BODY()
+
+public:
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    TSubclassOf<UGameplayEffect> DamageEffect;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    USkeletalMesh* SkeletalMesh;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    UStaticMesh* StaticMesh;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    UAnimMontage* AttackMontage;
+    
 };
 
 UENUM(BlueprintType)
@@ -79,4 +110,13 @@ enum EItemState : uint8
     None UMETA(DisplayName = "None"),
     Equipped UMETA(DisplayName = "Equipped"),
     Dropped UMETA(DisplayName = "Dropped")
+};
+
+UENUM(BlueprintType)
+enum class EMovementDirectionType : uint8
+{
+    None UMETA(DisplayName = "None"),
+    OrientToMovement UMETA(DisplayName = "OrientToMovement"),
+    Strafe UMETA(DisplayName = "Strafe")
+    
 };

@@ -194,7 +194,7 @@ void UInventoryComponent::UnequipItem()
 
     if (IsValid(CurrentEquippedItem))
     {
-        CurrentEquippedItem->OnUnequipped();
+        CurrentEquippedItem->OnUnequipped(GetOwner());
         CurrentEquippedItem = nullptr;
     }
 }
@@ -205,7 +205,7 @@ void UInventoryComponent::DropItem()
 
     if (IsValid(CurrentEquippedItem))
     {
-        CurrentEquippedItem->OnDropped();
+        CurrentEquippedItem->OnDropped(GetOwner());
         RemoveItem(CurrentEquippedItem->GetItemStaticDataClass());
         CurrentEquippedItem = nullptr;
     }

@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "SPStatics.h"
 #include "SPTypes.h"
+#include "GameplayAbilitySpecHandle.h"
+#include "ActiveGameplayEffectHandle.h"
 #include "InventoryItemInstance.generated.h"
 
 class UItemStaticData;
@@ -30,8 +32,10 @@ public:
     const UItemStaticData* GetItemStaticData() const;
 
 	virtual void OnEquipped(AActor* InOwner);
-    virtual void OnUnequipped();
-    virtual void OnDropped();
+    virtual void OnUnequipped(AActor* InOwner);
+    virtual void OnDropped(AActor* InOwner);
+
+    AItemActor* GetItemActor() const { return  ItemActor; }
     
 private:
 
@@ -49,4 +53,17 @@ private:
     UPROPERTY(Replicated)
     AItemActor* ItemActor = nullptr;
 
+    void TryGrantAbilities(AActor* InOwner);
+
+    void TryRemoveAbilities(AActor* InOwner);
+
+    void TryApplyEffect(AActor* InOwner);
+
+    void TryRemoveEffect(AActor* InOwner);
+
+    UPROPERTY()
+    TArray<FGameplayAbilitySpecHandle> GrantedAbilityHandles;
+
+    TArray<FActiveGameplayEffectHandle> OngoingEffectHandles;
+    
 };

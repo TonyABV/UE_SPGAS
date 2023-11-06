@@ -6,6 +6,9 @@
 #include "Actors/ItemActor.h"
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemLog.h"
 
 void UInventoryItemInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -46,30 +49,119 @@ void UInventoryItemInstance::OnEquipped(AActor* InOwner)
         {
             ItemActor->AttachToComponent(Character->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, GetItemStaticData()->AttachmentSocket);
         }
-
     }
+
+    TryGrantAbilities(InOwner);
+
+    TryApplyEffect(InOwner);
+    
     bEquipped = true;
 }
 
-void UInventoryItemInstance::OnUnequipped()
+void UInventoryItemInstance::OnUnequipped(AActor* InOwner)
 {
     if (ItemActor)
     {
         ItemActor->Destroy();
         ItemActor = nullptr;
     }
+    
+    TryRemoveAbilities(InOwner);
+
+    TryRemoveEffect(InOwner);
+    
     bEquipped = false;
 }
 
-void UInventoryItemInstance::OnDropped()
+void UInventoryItemInstance::OnDropped(AActor* InOwner)
 {
     if (ItemActor)
     {
         ItemActor->OnDropped();
     }
+    
+    TryRemoveAbilities(InOwner);
+    
+    TryRemoveEffect(InOwner);
+
     bEquipped = false;
 }
 
 void UInventoryItemInstance::OnRep_Equipped()
 {
+}
+
+void UInventoryItemInstance::TryGrantAbilities(AActor* InOwner)
+{
+    if(InOwner && InOwner->HasAuthority())
+    {
+        if(UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(InOwner))
+        {            
+            if(const UItemStaticData* ItemStaticData = GetItemStaticData())
+            {
+                for(auto Ability : ItemStaticData->GrantedAbilities)
+                {
+                    GrantedAbilityHandles.Add(AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability)));
+                }
+            }
+        }
+    }
+}
+
+void UInventoryItemInstance::TryRemoveAbilities(AActor* InOwner)
+{
+    if(InOwner && InOwner->HasAuthority())
+    {
+        if(UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(InOwner))
+        {
+            for(auto Handle : GrantedAbilityHandles)
+            {
+                AbilitySystemComponent->ClearAbility(Handle);
+            }
+            GrantedAbilityHandles.Empty();
+        }
+    }
+}
+
+void UInventoryItemInstance::TryApplyEffect(AActor* InOwner)
+{
+    if(UAbilitySystemComponent* ASComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(InOwner))
+    {
+        const UItemStaticData* ItemStaticData = GetItemStaticData();
+
+        FGameplayEffectContextHandle ContextHandle = ASComponent->MakeEffectContext();
+        for(auto GameplayEffect : ItemStaticData->OngoingEffects)
+        {
+            if(!GameplayEffect.Get()) continue;
+
+            FGameplayEffectSpecHandle SpecHandle = ASComponent->MakeOutgoingSpec(GameplayEffect, 1, ContextHandle);
+            if(SpecHandle.IsValid())
+            {
+                FActiveGameplayEffectHandle ActiveGEHandle = ASComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+                if(!ActiveGEHandle.WasSuccessfullyApplied())
+                {
+                    ABILITY_LOG(Log, TEXT("Item %s failed to apply runtime effect %s"), *GetName(), *GetNameSafe(GameplayEffect));
+                }
+                else
+                {
+                    OngoingEffectHandles.Add(ActiveGEHandle);
+                }
+            }
+        }
+    }
+}
+
+void UInventoryItemInstance::TryRemoveEffect(AActor* InOwner)
+{
+    if(UAbilitySystemComponent* ASComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(InOwner))
+    {
+        for(auto EffectHandle : OngoingEffectHandles)
+        {
+            if(EffectHandle.IsValid())
+            {
+                ASComponent->RemoveActiveGameplayEffect(EffectHandle);
+            }
+        }
+    }
+    OngoingEffectHandles.Empty();
 }

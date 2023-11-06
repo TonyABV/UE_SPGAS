@@ -68,6 +68,9 @@ class AStudyProjectCharacter : public ACharacter, public IAbilitySystemInterface
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* UnequipInputAction;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    class UInputAction* AttackInputAction;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = MotionWarp, meta = (AllowPrivateAccess = "true"))
     USPMotionWarpingComponent* MotionWarpingComponent;
 
@@ -155,8 +158,12 @@ protected:
     	
     void OnEquipNextTriggered(const FInputActionValue& InputActionValue);
     	
-    void OuUnqueipTriggered(const FInputActionValue& InputActionValue);
-    	
+    void OuUnequipTriggered(const FInputActionValue& InputActionValue);
+
+    void OuAttackActionStarted(const FInputActionValue& InputActionValue);
+
+    void OuAttackActionEnded(const FInputActionValue& InputActionValue);
+    
 	virtual void InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication = false);
 
 protected:// APawn interface
@@ -177,8 +184,13 @@ protected: // Gameplay Events
 
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag JumpEventTag;
+    
+    UPROPERTY(EditDefaultsOnly)
+    FGameplayTag StartAttackEventTag;
+    
+    UPROPERTY(EditDefaultsOnly)
+    FGameplayTag EndAttackEventTag;
 	
-
 protected: // Gameplay Tags
 
 	UPROPERTY(EditDefaultsOnly)

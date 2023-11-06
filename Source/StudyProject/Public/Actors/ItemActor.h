@@ -6,6 +6,7 @@
 #include "GameplayTagContainer.h"
 #include "GameFramework/Actor.h"
 #include "SPTypes.h"
+#include "Abilities/GameplayAbilityTypes.h"
 #include "ItemActor.generated.h"
 
 class UInventoryItemInstance;
@@ -40,9 +41,12 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     USphereComponent* SphereComponent;
 
-    UPROPERTY(Replicated)
+    UPROPERTY(ReplicatedUsing = OnRep_ItemInstance)
     UInventoryItemInstance* ItemInstance = nullptr;
 
+    UFUNCTION()
+    void OnRep_ItemInstance(UInventoryItemInstance* OldItemInstance);
+    
     UPROPERTY(ReplicatedUsing = OnRep_ItemState)
     TEnumAsByte<EItemState> ItemState = EItemState::None;
 
@@ -51,6 +55,9 @@ protected:
 
     UFUNCTION()
     void OnRep_ItemState();
+
+    virtual void InitInternal();
+    
 public:
     virtual void Tick(float DeltaTime) override;
 
