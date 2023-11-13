@@ -27,7 +27,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Effects")
 	TArray<TSubclassOf<UGameplayEffect>> OngoingEffectsToRemoveOnEnd;
 
-	TArray<FActiveGameplayEffectHandle> RemoveOnEndEffectHandle;
+	TArray<FActiveGameplayEffectHandle> RemoveOnEndEffectHandles;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	AStudyProjectCharacter* GetSPCharacter() const;

@@ -119,9 +119,9 @@ void AStudyProjectCharacter::SetCharacterData(const FCharacterData& InCharacterD
 	InitFromCharacterData(InCharacterData);
 }
 
-void AStudyProjectCharacter::PostInitializeComponents()
+void AStudyProjectCharacter::PostLoad()
 {
-	Super::PostInitializeComponents();
+	Super::PostLoad();
 
 	if(IsValid(CharacterDataAsset))
 	{

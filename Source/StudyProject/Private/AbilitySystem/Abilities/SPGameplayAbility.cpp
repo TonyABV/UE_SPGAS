@@ -11,48 +11,48 @@ void USPGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
                                          const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                          const FGameplayEventData* TriggerEventData)
 {
-	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+    Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	FGameplayEffectContextHandle ContextHandle = ActorInfo->AbilitySystemComponent->MakeEffectContext();
-	
-	if(IsInstantiated())
-	{
-		for (TSubclassOf<UGameplayEffect> GameplayEffect : OngoingEffectsToRemoveOnEnd)
-		{
-			if (!GameplayEffect.Get()) continue;
-			if (UAbilitySystemComponent* AbilitySystem = ActorInfo->AbilitySystemComponent.Get())
-			{
-				FGameplayEffectSpecHandle SpecHandle = ActorInfo->AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, 1, ContextHandle);
-				if (SpecHandle.IsValid())
-				{
-					FActiveGameplayEffectHandle ActiveGEHandle = //
-						ActorInfo->AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
-					if (!ActiveGEHandle.WasSuccessfullyApplied())
-					{
-						ABILITY_LOG(Log, TEXT("Ability %s failed to apply runtime effect %s"), *GetNameSafe(GameplayEffect));
-					}
-					else
-					{
-						RemoveOnEndEffectHandle.Add(ActiveGEHandle);
-					}
-				}
-			}
-		}
-	}
+    FGameplayEffectContextHandle EffectContext = ActorInfo->AbilitySystemComponent->MakeEffectContext();
 
-    for (TSubclassOf<UGameplayEffect> GameplayEffect : OngoingEffectsToJustApplyOnStart)
+    for (auto GameplayEffect : OngoingEffectsToJustApplyOnStart)
     {
         if (!GameplayEffect.Get()) continue;
 
-        if (UAbilitySystemComponent* AbilitySystem = ActorInfo->AbilitySystemComponent.Get())
+        if (UAbilitySystemComponent* AbilityComponent = ActorInfo->AbilitySystemComponent.Get())
         {
-            FGameplayEffectSpecHandle SpecHandle = AbilitySystem->MakeOutgoingSpec(GameplayEffect, 1, ContextHandle);
+            FGameplayEffectSpecHandle SpecHandle = AbilityComponent->MakeOutgoingSpec(GameplayEffect, 1, EffectContext);
             if (SpecHandle.IsValid())
             {
-                FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystem->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+                FActiveGameplayEffectHandle ActiveGEHandle = AbilityComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
                 if (!ActiveGEHandle.WasSuccessfullyApplied())
                 {
-                    ABILITY_LOG(Log, TEXT("Ability %s failed to apply startup effect %s"), *GetNameSafe(GameplayEffect));
+                    ABILITY_LOG(Log, TEXT("Ability %s failed to apply startup effect %s"), *GetName(), *GetNameSafe(GameplayEffect));
+                }
+            }
+        }
+    }
+
+    if (IsInstantiated())
+    {
+        for (auto GameplayEffect : OngoingEffectsToRemoveOnEnd)
+        {
+            if (!GameplayEffect.Get()) continue;
+
+            if (UAbilitySystemComponent* AbilityComponent = ActorInfo->AbilitySystemComponent.Get())
+            {
+                FGameplayEffectSpecHandle SpecHandle = AbilityComponent->MakeOutgoingSpec(GameplayEffect, 1, EffectContext);
+                if (SpecHandle.IsValid())
+                {
+                    FActiveGameplayEffectHandle ActiveGEHandle = AbilityComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+                    if (!ActiveGEHandle.WasSuccessfullyApplied())
+                    {
+                        ABILITY_LOG(Log, TEXT("Ability %s failed to apply runtime effect %s"), *GetName(), *GetNameSafe(GameplayEffect));
+                    }
+                    else
+                    {
+                        RemoveOnEndEffectHandles.Add(ActiveGEHandle);
+                    }
                 }
             }
         }
@@ -62,23 +62,20 @@ void USPGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 void USPGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-	if(IsInstantiated())
-	{
-		for(FActiveGameplayEffectHandle ActiveEffectHandle : RemoveOnEndEffectHandle)
-		{
-			if (UAbilitySystemComponent* AbilitySystem = ActorInfo->AbilitySystemComponent.Get())
-			{
-				if(ActiveEffectHandle.IsValid())
-				{
-					ActorInfo->AbilitySystemComponent->RemoveActiveGameplayEffect(ActiveEffectHandle);
-				}
-			}
-		}
+    if (IsInstantiated())
+    {
+        for (FActiveGameplayEffectHandle ActiveEffectHandle : RemoveOnEndEffectHandles)
+        {
+            if (ActiveEffectHandle.IsValid())
+            {
+                ActorInfo->AbilitySystemComponent->RemoveActiveGameplayEffect(ActiveEffectHandle);
+            }
+        }
 
-		RemoveOnEndEffectHandle.Empty();
-	}
+        RemoveOnEndEffectHandles.Empty();
+    }
 
-	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+    Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 AStudyProjectCharacter* USPGameplayAbility::GetSPCharacter() const

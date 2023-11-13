@@ -95,7 +95,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCharacterData(const FCharacterData& InCharacterData);
 
-	virtual void PostInitializeComponents() override;
+	virtual void PostLoad() override;
 
 	USPFootstepsComponent* GetFootStepComponent() const { return FootstepsComponent; }
 
