@@ -71,6 +71,8 @@ Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
     AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxMovementSpeedAttribute())
         .AddUObject(this, &AStudyProjectCharacter::OnMaxMovementSpeedChanged);
+    // AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute())//
+    //     .AddUObject(this, &AStudyProjectCharacter::OnHealthAttributeChanged);
 
 	AttributeSet = CreateDefaultSubobject<USPAttributeSetBase>(TEXT("AttributeSet"));
 
@@ -262,16 +264,19 @@ void AStudyProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 		//Sprint
         EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AStudyProjectCharacter::OnSprint);
-        EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AStudyProjectCharacter::OuStopSprint);
+        EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AStudyProjectCharacter::OnStopSprint);
 
 	    //Equip, Drop, Unequip item.
         EnhancedInputComponent->BindAction(EquipNextInputAction, ETriggerEvent::Started, this, &AStudyProjectCharacter::OnEquipNextTriggered);
-	    EnhancedInputComponent->BindAction(DropItemInputAction, ETriggerEvent::Started, this, &AStudyProjectCharacter::OuDropItemTriggered);
-	    EnhancedInputComponent->BindAction(UnequipInputAction, ETriggerEvent::Started, this, &AStudyProjectCharacter::OuUnequipTriggered);
+	    EnhancedInputComponent->BindAction(DropItemInputAction, ETriggerEvent::Started, this, &AStudyProjectCharacter::OnDropItemTriggered);
+	    EnhancedInputComponent->BindAction(UnequipInputAction, ETriggerEvent::Started, this, &AStudyProjectCharacter::OnUnequipTriggered);
 
 	    //Attack
-	    EnhancedInputComponent->BindAction(AttackInputAction, ETriggerEvent::Started, this, &AStudyProjectCharacter::OuAttackActionStarted);
-	    EnhancedInputComponent->BindAction(AttackInputAction, ETriggerEvent::Completed, this, &AStudyProjectCharacter::OuAttackActionEnded);
+	    EnhancedInputComponent->BindAction(AttackInputAction, ETriggerEvent::Started, this, &AStudyProjectCharacter::OnAttackActionStarted);
+	    EnhancedInputComponent->BindAction(AttackInputAction, ETriggerEvent::Completed, this, &AStudyProjectCharacter::OnAttackActionEnded);
+
+	    EnhancedInputComponent->BindAction(AimInputAction, ETriggerEvent::Started, this, &AStudyProjectCharacter::OnAimActionStarted);
+	    EnhancedInputComponent->BindAction(AimInputAction, ETriggerEvent::Completed, this, &AStudyProjectCharacter::OnAimActionEnded);
    
 	}
 
@@ -363,7 +368,7 @@ void AStudyProjectCharacter::OnSprint(const FInputActionValue& InputActionValue)
     }
 }
 
-void AStudyProjectCharacter::OuStopSprint(const FInputActionValue& InputActionValue)
+void AStudyProjectCharacter::OnStopSprint(const FInputActionValue& InputActionValue)
 {
     if (AbilitySystemComponent)
     {
@@ -371,7 +376,7 @@ void AStudyProjectCharacter::OuStopSprint(const FInputActionValue& InputActionVa
     }
 }
 
-void AStudyProjectCharacter::OuDropItemTriggered(const FInputActionValue& InputActionValue)
+void AStudyProjectCharacter::OnDropItemTriggered(const FInputActionValue& InputActionValue)
 {
     FGameplayEventData EventPayload;
     EventPayload.EventTag = UInventoryComponent::DropItemTag;
@@ -387,7 +392,7 @@ void AStudyProjectCharacter::OnEquipNextTriggered(const FInputActionValue& Input
     UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, UInventoryComponent::EquipNextItemTag, EventPayload);
 }
 
-void AStudyProjectCharacter::OuUnequipTriggered(const FInputActionValue& InputActionValue)
+void AStudyProjectCharacter::OnUnequipTriggered(const FInputActionValue& InputActionValue)
 {
     FGameplayEventData EventPayload;
     EventPayload.EventTag = UInventoryComponent::UnequipItemTag;
@@ -395,7 +400,7 @@ void AStudyProjectCharacter::OuUnequipTriggered(const FInputActionValue& InputAc
     UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, UInventoryComponent::UnequipItemTag, EventPayload);
 }
 
-void AStudyProjectCharacter::OuAttackActionStarted(const FInputActionValue& InputActionValue)
+void AStudyProjectCharacter::OnAttackActionStarted(const FInputActionValue& InputActionValue)
 {
     FGameplayEventData EventPayload;
     EventPayload.EventTag = StartAttackEventTag;
@@ -403,7 +408,7 @@ void AStudyProjectCharacter::OuAttackActionStarted(const FInputActionValue& Inpu
     UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, StartAttackEventTag, EventPayload);
 }
 
-void AStudyProjectCharacter::OuAttackActionEnded(const FInputActionValue& InputActionValue)
+void AStudyProjectCharacter::OnAttackActionEnded(const FInputActionValue& InputActionValue)
 {
     FGameplayEventData EventPayload;
     EventPayload.EventTag = EndAttackEventTag;
@@ -411,4 +416,18 @@ void AStudyProjectCharacter::OuAttackActionEnded(const FInputActionValue& InputA
     UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, EndAttackEventTag, EventPayload);
 }
 
+void AStudyProjectCharacter::OnAimActionStarted(const FInputActionValue& InputActionValue)
+{
+    FGameplayEventData EventPayload;
+    EventPayload.EventTag = StartAimEventTag;
 
+    UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, StartAimEventTag, EventPayload);
+}
+
+void AStudyProjectCharacter::OnAimActionEnded(const FInputActionValue& InputActionValue)
+{
+    FGameplayEventData EventPayload;
+    EventPayload.EventTag = EndAimEventTag;
+
+    UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, EndAimEventTag, EventPayload);
+}

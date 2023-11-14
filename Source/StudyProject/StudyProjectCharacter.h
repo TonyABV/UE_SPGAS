@@ -71,6 +71,9 @@ class AStudyProjectCharacter : public ACharacter, public IAbilitySystemInterface
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     class UInputAction* AttackInputAction;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    class UInputAction* AimInputAction;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = MotionWarp, meta = (AllowPrivateAccess = "true"))
     USPMotionWarpingComponent* MotionWarpingComponent;
 
@@ -152,17 +155,21 @@ protected:
 	
     void OnSprint(const FInputActionValue& InputActionValue);
 	
-    void OuStopSprint(const FInputActionValue& InputActionValue);
+    void OnStopSprint(const FInputActionValue& InputActionValue);
 
-    void OuDropItemTriggered(const FInputActionValue& InputActionValue);
+    void OnDropItemTriggered(const FInputActionValue& InputActionValue);
     	
     void OnEquipNextTriggered(const FInputActionValue& InputActionValue);
     	
-    void OuUnequipTriggered(const FInputActionValue& InputActionValue);
+    void OnUnequipTriggered(const FInputActionValue& InputActionValue);
 
-    void OuAttackActionStarted(const FInputActionValue& InputActionValue);
+    void OnAttackActionStarted(const FInputActionValue& InputActionValue);
 
-    void OuAttackActionEnded(const FInputActionValue& InputActionValue);
+    void OnAttackActionEnded(const FInputActionValue& InputActionValue);
+    
+    void OnAimActionStarted(const FInputActionValue& InputActionValue);
+
+    void OnAimActionEnded(const FInputActionValue& InputActionValue);
     
 	virtual void InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication = false);
 
@@ -190,6 +197,12 @@ protected: // Gameplay Events
     
     UPROPERTY(EditDefaultsOnly)
     FGameplayTag EndAttackEventTag;
+      
+    UPROPERTY(EditDefaultsOnly)
+    FGameplayTag StartAimEventTag;
+    
+    UPROPERTY(EditDefaultsOnly)
+    FGameplayTag EndAimEventTag;
 	
 protected: // Gameplay Tags
 

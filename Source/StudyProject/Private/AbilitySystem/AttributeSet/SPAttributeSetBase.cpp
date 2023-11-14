@@ -11,31 +11,33 @@ void USPAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION_NOTIFY(USPAttributeSetBase, Health, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(USPAttributeSetBase, MaxHealth, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(USPAttributeSetBase, Stamina, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(USPAttributeSetBase, MaxStamina, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(USPAttributeSetBase, MaxMovementSpeed, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(USPAttributeSetBase, Health, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(USPAttributeSetBase, MaxHealth, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(USPAttributeSetBase, Stamina, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(USPAttributeSetBase, MaxStamina, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(USPAttributeSetBase, MaxMovementSpeed, COND_None, REPNOTIFY_Always);
 }
 
 void USPAttributeSetBase::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
 {
-	Super::PostGameplayEffectExecute(Data);
+    Super::PostGameplayEffectExecute(Data);
 
-	if(Data.EvaluatedData.Attribute == GetHealthAttribute())
-	{
-		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
-	}
-	else if(Data.EvaluatedData.Attribute == GetMaxMovementSpeedAttribute())
-	{
-		ACharacter* Character = Cast<ACharacter>(GetOwningActor());
-		UCharacterMovementComponent* MovementComponent = Character ? Character->GetCharacterMovement() : nullptr;
+    if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+    {
+        SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
+    }
+    else if (Data.EvaluatedData.Attribute == GetMaxMovementSpeedAttribute())
+    {
+        ACharacter* OwningCharacter = Cast<ACharacter>(GetOwningActor());
+        UCharacterMovementComponent* CharacterMovement = OwningCharacter ? OwningCharacter->GetCharacterMovement() : nullptr;
 
-		if(MovementComponent)
-		{
-			MovementComponent->MaxWalkSpeed = GetMaxMovementSpeed();
-		}
-	}
+        if (CharacterMovement)
+        {
+            const float MaxSpeed = GetMaxMovementSpeed();
+
+            CharacterMovement->MaxWalkSpeed = MaxSpeed;
+        }
+    }
 }
 
 void USPAttributeSetBase::OnRep_Health(const FGameplayAttributeData& OldHealth)

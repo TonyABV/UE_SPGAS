@@ -8,7 +8,8 @@ public class StudyProject : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "EnhancedInput", "NetCore" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", //
+			"HeadMountedDisplay", "EnhancedInput", "NetCore", "Niagara" });
 
 		PublicIncludePaths.Add("StudyProject/");
 

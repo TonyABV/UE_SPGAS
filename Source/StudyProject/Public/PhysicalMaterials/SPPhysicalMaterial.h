@@ -7,6 +7,7 @@
 #include "SPPhysicalMaterial.generated.h"
 
 class USoundBase;
+class UNiagaraSystem;
 
 UCLASS()
 class STUDYPROJECT_API USPPhysicalMaterial : public UPhysicalMaterial
@@ -16,4 +17,11 @@ class STUDYPROJECT_API USPPhysicalMaterial : public UPhysicalMaterial
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Sound")
 	USoundBase* FootStepSound;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    class USoundBase* PointImpactSound = nullptr;
+    
+    UPROPERTY(EditDefaultsOnly, Category = "VFX")
+    UNiagaraSystem* PointImpactVFX = nullptr;
+
 };

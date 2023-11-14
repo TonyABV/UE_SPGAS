@@ -107,6 +107,10 @@ public:
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     float BaseDamage;
+    
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    USoundBase* AttackSound;
+
 };
 
 UENUM(BlueprintType)
