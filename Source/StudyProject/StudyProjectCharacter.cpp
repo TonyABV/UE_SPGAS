@@ -13,6 +13,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemLog.h"
+#include "GameplayEffectExtension.h"
 #include "AbilitySystem/AttributeSet/SPAttributeSetBase.h"
 #include "AbilitySystem/Components/SP_AbilitySystemComponentBase.h"
 #include "ActorComponents/InventoryComponent.h"
@@ -71,9 +72,12 @@ Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
     AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxMovementSpeedAttribute())
         .AddUObject(this, &AStudyProjectCharacter::OnMaxMovementSpeedChanged);
-    // AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute())//
-    //     .AddUObject(this, &AStudyProjectCharacter::OnHealthAttributeChanged);
-
+    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute())//
+        .AddUObject(this, &AStudyProjectCharacter::OnHealthAttributeChanged);
+    
+    AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(TEXT("State.Ragdoll")), //
+        EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AStudyProjectCharacter::OnRagdollStateChanged);
+    
 	AttributeSet = CreateDefaultSubobject<USPAttributeSetBase>(TEXT("AttributeSet"));
 
 	FootstepsComponent = CreateDefaultSubobject<USPFootstepsComponent>(TEXT("FootstepsComponent"));
@@ -173,6 +177,20 @@ void AStudyProjectCharacter::OnEndCrouch(float HalfHeightAdjust, float ScaledHal
     Super::OnEndCrouch(HalfHeightAdjust, ScaledHalfHeightAdjust);
 }
 
+void AStudyProjectCharacter::StartRagdoll()
+{
+    USkeletalMeshComponent* SKMesh = GetMesh();
+    if(IsValid(SKMesh) && !SKMesh->IsSimulatingPhysics())
+    {
+        SKMesh->SetCollisionProfileName(TEXT("Ragdoll"));
+        SKMesh->SetSimulatePhysics(true);
+        SKMesh->SetAllPhysicsLinearVelocity(FVector());
+        SKMesh->SetAllPhysicsAngularVelocityInRadians(FVector());
+        SKMesh->WakeAllRigidBodies();
+        GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);        
+    }
+}
+
 void AStudyProjectCharacter::GiveAbilities()
 {
 	if (HasAuthority() && AbilitySystemComponent)
@@ -237,6 +255,25 @@ void AStudyProjectCharacter::OnMaxMovementSpeedChanged(const FOnAttributeChangeD
     if (GetCharacterMovement())
     {
         GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
+    }
+}
+
+void AStudyProjectCharacter::OnHealthAttributeChanged(const FOnAttributeChangeData& Data)
+{
+    if(Data.NewValue <= 0 && Data.OldValue > 0)
+    {
+        AStudyProjectCharacter* OtherCharacter = nullptr;
+
+        if(Data.GEModData)
+        {
+            const FGameplayEffectContextHandle& EffectContext = Data.GEModData->EffectSpec.GetEffectContext();
+            OtherCharacter = Cast<AStudyProjectCharacter>(EffectContext.GetInstigator());
+        }
+
+        FGameplayEventData EventPayload;
+        EventPayload.EventTag = ZeroHealthEventTag;
+
+        UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, ZeroHealthEventTag, EventPayload);
     }
 }
 
@@ -342,6 +379,14 @@ void AStudyProjectCharacter::Look(const FInputActionValue& Value)
 void AStudyProjectCharacter::InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication)
 {
 
+}
+
+void AStudyProjectCharacter::OnRagdollStateChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+     if(NewCount > 0)
+     {
+         StartRagdoll();
+     }
 }
 
 void AStudyProjectCharacter::OnCrouch(const FInputActionValue& InputActionValue)

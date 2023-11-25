@@ -6,6 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "StudyProjectGameMode.generated.h"
 
+class ASPPlayerController;
+
 UCLASS(minimalapi)
 class AStudyProjectGameMode : public AGameModeBase
 {
@@ -13,6 +15,9 @@ class AStudyProjectGameMode : public AGameModeBase
 
 public:
 	AStudyProjectGameMode();
+
+    void NotifyPlayerDied(ASPPlayerController* PlayerController);
+    
 };
 
 

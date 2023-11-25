@@ -2,6 +2,7 @@
 
 #include "StudyProjectGameMode.h"
 #include "StudyProjectCharacter.h"
+#include "PlayerController/SPPlayerController.h"
 #include "UObject/ConstructorHelpers.h"
 
 AStudyProjectGameMode::AStudyProjectGameMode()
@@ -12,4 +13,10 @@ AStudyProjectGameMode::AStudyProjectGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+    PlayerControllerClass = ASPPlayerController::StaticClass();
+}
+
+void AStudyProjectGameMode::NotifyPlayerDied(ASPPlayerController* PlayerController)
+{
+    if(PlayerController) PlayerController->RestartPlayerIn(2.f);
 }

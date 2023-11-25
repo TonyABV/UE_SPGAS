@@ -118,6 +118,8 @@ public:
 
     
     UInventoryComponent* GetInventoryComponent() const { return  InventoryComponent; }
+
+    void StartRagdoll();
     
 protected:
 	
@@ -173,6 +175,9 @@ protected:
     
 	virtual void InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication = false);
 
+    UFUNCTION()
+    void OnRagdollStateChanged(const FGameplayTag CallbackTag, int32 NewCount);
+    
 protected:// APawn interface
 
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -204,6 +209,9 @@ protected: // Gameplay Events
     UPROPERTY(EditDefaultsOnly)
     FGameplayTag EndAimEventTag;
 	
+    UPROPERTY(EditDefaultsOnly)
+    FGameplayTag ZeroHealthEventTag;
+    
 protected: // Gameplay Tags
 
 	UPROPERTY(EditDefaultsOnly)
@@ -215,6 +223,9 @@ protected: // Gameplay Tags
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTagContainer SprintTags;
 
+	UPROPERTY(EditDefaultsOnly)
+	FGameplayTagContainer RagdolStateTag;
+    
 protected: // Gameplay Effects
 
 	UPROPERTY(EditDefaultsOnly)
@@ -228,5 +239,7 @@ private:
 
 	void OnMaxMovementSpeedChanged(const FOnAttributeChangeData& Data);
 
+    void OnHealthAttributeChanged(const FOnAttributeChangeData& Data);
+    
 };
 
