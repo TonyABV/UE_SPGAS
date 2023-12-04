@@ -10,7 +10,7 @@
 
 USPGAJump::USPGAJump()
 {
-	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
+	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::ServerInitiated;
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;
 }
 
@@ -34,7 +34,7 @@ bool USPGAJump::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 void USPGAJump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-    if (HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
+    //if (!HasAuthority(&ActivationInfo))
     {
         if (!CommitAbility(Handle, ActorInfo, ActivationInfo)) return;
 

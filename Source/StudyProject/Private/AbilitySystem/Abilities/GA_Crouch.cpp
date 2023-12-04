@@ -7,7 +7,7 @@
 
 UGA_Crouch::UGA_Crouch()
 {
-    NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
+    NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::ServerInitiated;
     InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 }
 
