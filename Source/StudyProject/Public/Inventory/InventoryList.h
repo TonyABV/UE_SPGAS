@@ -32,9 +32,14 @@ struct FInventoryList : public FFastArraySerializer
     void AddItem(TSubclassOf<UItemStaticData> InItemStaticDataClass);
     void AddItem(UInventoryItemInstance* InventoryItemInstance);
     void RemoveItem(TSubclassOf<UItemStaticData> InItemStaticDataClass);
+    void RemoveItem(UInventoryItemInstance* InItemInstance);
 
     TArray<FInventoryListItem>& GetItemsRef() { return Items; }
 
+    TArray<UInventoryItemInstance*> GetAllItemInstancesWithTag(FGameplayTag InTag);
+
+    TArray<UInventoryItemInstance*> GetAllAvailableInstancesOfType(TSubclassOf<UItemStaticData> InItemStaticDataClass);
+    
 protected:
 
     UPROPERTY()

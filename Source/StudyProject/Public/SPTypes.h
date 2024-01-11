@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "SPTypes.generated.h"
 
 class AItemActor;
@@ -81,6 +82,12 @@ public:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     TArray<TSubclassOf<UGameplayEffect>> OngoingEffects;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    TArray<FGameplayTag> InventoryTags;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    int32 MaxStackCount = 1;
     
 };
 
@@ -112,6 +119,20 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     USoundBase* AttackSound;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    FGameplayTag AmmoTag;
+    
+};
+UCLASS(BlueprintType, Blueprintable)
+class UAmmoItemStaticData : public UItemStaticData
+{
+    GENERATED_BODY()
+
+public:
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    UStaticMesh* StaticMesh = nullptr;
+    
 };
 
 UENUM(BlueprintType)

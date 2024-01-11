@@ -13,7 +13,8 @@
 				"Engine",
 				"PhysicsCore",
 				"MotionWarping",
-				"GameplayTags"
+				"GameplayTags",
+				"CoreUObject"
 			]
 		}
 	],

@@ -57,6 +57,9 @@ protected:
     void OnRep_ItemState();
 
     virtual void InitInternal();
+
+    UPROPERTY(EditAnywhere, Replicated)
+    int32 Quantity = 1;
     
 public:
     virtual void Tick(float DeltaTime) override;

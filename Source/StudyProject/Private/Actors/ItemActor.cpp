@@ -83,6 +83,7 @@ void AItemActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifeti
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(AItemActor, ItemInstance);
     DOREPLIFETIME(AItemActor, ItemState);
+    DOREPLIFETIME(AItemActor, Quantity);
 }
 
 void AItemActor::Init(UInventoryItemInstance* InInstance)
@@ -114,7 +115,7 @@ void AItemActor::BeginPlay()
         if(!IsValid(ItemInstance) && IsValid(StaticDataClass))
         {
             ItemInstance = NewObject<UInventoryItemInstance>();
-            ItemInstance->Init(StaticDataClass);
+            ItemInstance->Init(StaticDataClass, Quantity );
             
             SphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
             SphereComponent->SetGenerateOverlapEvents(true);

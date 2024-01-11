@@ -10,6 +10,7 @@
 #include "InventoryItemInstance.generated.h"
 
 class UItemStaticData;
+class UInventoryComponent;
 
 /**
  * 
@@ -24,7 +25,7 @@ public:
 
     virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
-    virtual void Init(TSubclassOf<UItemStaticData> InItemStaticDataClass);
+    virtual void Init(TSubclassOf<UItemStaticData> InItemStaticDataClass, int32 InQuantity = 1);
 
     TSubclassOf<UItemStaticData> GetItemStaticDataClass() const { return ItemStaticDataClass; }
 
@@ -36,6 +37,10 @@ public:
     virtual void OnDropped(AActor* InOwner);
 
     AItemActor* GetItemActor() const { return  ItemActor; }
+
+    int32 GetQuantity() const { return Quantity; }
+
+    void AddItems(int32 Count);
     
 private:
 
@@ -53,6 +58,9 @@ private:
     UPROPERTY(Replicated)
     AItemActor* ItemActor = nullptr;
 
+    UPROPERTY(Replicated)
+    int32 Quantity = 1;
+    
     void TryGrantAbilities(AActor* InOwner);
 
     void TryRemoveAbilities(AActor* InOwner);

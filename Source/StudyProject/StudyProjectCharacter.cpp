@@ -21,6 +21,7 @@
 #include "ActorComponents/SPCharacterMovementComponent.h"
 #include "ActorComponents/SPFootstepsComponent.h"
 #include "ActorComponents/SPMotionWarpingComponent.h"
+#include "AbilitySystemLog.h"
 
 
 //////////////////////////////////////////////////////////////////////////

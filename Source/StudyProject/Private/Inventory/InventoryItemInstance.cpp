@@ -9,6 +9,9 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemLog.h"
+#include "AbilitySystemLog.h"
+#include "Kismet/KismetMathLibrary.h"
+
 
 void UInventoryItemInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -17,11 +20,14 @@ void UInventoryItemInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
     DOREPLIFETIME(UInventoryItemInstance, ItemStaticDataClass);
     DOREPLIFETIME(UInventoryItemInstance, bEquipped);
     DOREPLIFETIME(UInventoryItemInstance, ItemActor);
+    DOREPLIFETIME(UInventoryItemInstance, Quantity);
+
 }
 
-void UInventoryItemInstance::Init(TSubclassOf<UItemStaticData> InItemStaticDataClass)
+void UInventoryItemInstance::Init(TSubclassOf<UItemStaticData> InItemStaticDataClass, int32 InQuantity)
 {
     ItemStaticDataClass = InItemStaticDataClass;
+    Quantity = InQuantity;
 }
 
 const UItemStaticData* UInventoryItemInstance::GetItemStaticData() const
@@ -85,6 +91,16 @@ void UInventoryItemInstance::OnDropped(AActor* InOwner)
     TryRemoveEffect(InOwner);
 
     bEquipped = false;
+}
+
+void UInventoryItemInstance::AddItems(int32 Count)
+{
+    Quantity += Count;
+
+    if(Quantity < 0)
+    {
+        Quantity = 0;
+    }
 }
 
 void UInventoryItemInstance::OnRep_Equipped()
