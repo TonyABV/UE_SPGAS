@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Inventory/ItemActors/AmmoItemActor.h"
 
 #include "Inventory/InventoryItemInstance.h"
@@ -15,14 +14,14 @@ void AAmmoItemActor::InitInternal()
 {
     Super::InitInternal();
 
-    if(const UAmmoItemStaticData* WeaponData = GetAmmoItemStaticData())
+    if (const UAmmoItemStaticData* WeaponData = GetAmmoItemStaticData())
     {
-        if(WeaponData->StaticMesh)
+        if (WeaponData->StaticMesh)
         {
-            UStaticMeshComponent* StaticMeshComponent = NewObject<UStaticMeshComponent>(this, //
-                UStaticMeshComponent::StaticClass(),//
+            UStaticMeshComponent* StaticMeshComponent = NewObject<UStaticMeshComponent>(this,  //
+                UStaticMeshComponent::StaticClass(),                                           //
                 "SkeletalMeshComponent");
-            if(StaticMeshComponent)
+            if (StaticMeshComponent)
             {
                 StaticMeshComponent->RegisterComponent();
                 StaticMeshComponent->SetStaticMesh(WeaponData->StaticMesh);
@@ -32,9 +31,9 @@ void AAmmoItemActor::InitInternal()
             }
         }
 
-        if(IsValid(MeshComponent))
+        if (IsValid(MeshComponent))
         {
             MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         }
-    }    
+    }
 }

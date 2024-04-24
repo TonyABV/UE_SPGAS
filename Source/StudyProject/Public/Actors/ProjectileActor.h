@@ -10,24 +10,22 @@
 UCLASS()
 class STUDYPROJECT_API AProjectileActor : public AActor
 {
-	GENERATED_BODY()
-	
-public:	
+    GENERATED_BODY()
 
-	AProjectileActor();
+public:
+    AProjectileActor();
 
     const UProjectileStaticData* GetProjectileStaticData() const;
 
     UPROPERTY(BlueprintReadOnly, Replicated)
     TSubclassOf<UProjectileStaticData> ProjectileDataClass;
-    
-protected:
 
+protected:
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-    virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const;
-    
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+
     UPROPERTY()
     class UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
 
@@ -37,6 +35,5 @@ protected:
     class UStaticMeshComponent* StaticMeshComponent = nullptr;
 
     UFUNCTION()
-    void OnProjectileStop(const FHitResult& ImpactResult);    
-
+    void OnProjectileStop(const FHitResult& ImpactResult);
 };

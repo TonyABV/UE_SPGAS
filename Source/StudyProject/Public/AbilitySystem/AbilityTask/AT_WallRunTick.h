@@ -15,36 +15,33 @@ class UCharacterMovementComponent;
 UCLASS()
 class STUDYPROJECT_API UAT_WallRunTick : public UAbilityTask
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
+    UPROPERTY(BlueprintAssignable)
+    FOnWallRunWallSideDeterminedDelegate OnWallSideDetermined;
 
-	UPROPERTY(BlueprintAssignable)
-	FOnWallRunWallSideDeterminedDelegate OnWallSideDetermined;
-
-	UPROPERTY(BlueprintAssignable)
+    UPROPERTY(BlueprintAssignable)
     FOnWallRunFinishedDelegate OnWallRunFinished;
 
-	UFUNCTION(BlueprintCallable, Category = "Ability|Tasks", meta = (HidenPin = "OwneingAbility", DefaultToSelf = "OwningAbility"))
+    UFUNCTION(BlueprintCallable, Category = "Ability|Tasks", meta = (HidenPin = "OwneingAbility", DefaultToSelf = "OwningAbility"))
     static UAT_WallRunTick* CreateWallRunTask(UGameplayAbility* OwningAbility, ACharacter* InCharacterOwner,
         UCharacterMovementComponent* InCharacterMovement, TArray<TEnumAsByte<EObjectTypeQuery>> TraceObjectTypes);
 
-	virtual void Activate() override;
+    virtual void Activate() override;
 
-	virtual void OnDestroy(bool bInOwnerFinished) override;
+    virtual void OnDestroy(bool bInOwnerFinished) override;
 
-	virtual void TickTask(float DeltaTime) override;
+    virtual void TickTask(float DeltaTime) override;
 
 protected:
+    UCharacterMovementComponent* CharacterMovement = nullptr;
 
-	UCharacterMovementComponent* CharacterMovement = nullptr;
+    ACharacter* CharacterOwner = nullptr;
 
-	ACharacter* CharacterOwner = nullptr;
+    TArray<TEnumAsByte<EObjectTypeQuery>> WallRun_TraceObjectTypes;
 
-	TArray<TEnumAsByte<EObjectTypeQuery>> WallRun_TraceObjectTypes;
+    bool FindRunnableWall(FHitResult& OnWallHit);
 
-	bool FindRunnableWall(FHitResult& OnWallHit);
-
-	bool IsWallOnTheLeft(const FHitResult& InWallHit) const;
-
+    bool IsWallOnTheLeft(const FHitResult& InWallHit) const;
 };

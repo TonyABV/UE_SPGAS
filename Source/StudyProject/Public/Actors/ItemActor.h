@@ -46,7 +46,7 @@ protected:
 
     UFUNCTION()
     void OnRep_ItemInstance(UInventoryItemInstance* OldItemInstance);
-    
+
     UPROPERTY(ReplicatedUsing = OnRep_ItemState)
     TEnumAsByte<EItemState> ItemState = EItemState::None;
 
@@ -60,8 +60,7 @@ protected:
 
     UPROPERTY(EditAnywhere, Replicated)
     int32 Quantity = 1;
-    
+
 public:
     virtual void Tick(float DeltaTime) override;
-
 };

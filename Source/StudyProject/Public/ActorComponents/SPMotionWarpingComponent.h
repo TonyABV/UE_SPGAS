@@ -7,11 +7,10 @@
 #include "SPMotionWarpingComponent.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class STUDYPROJECT_API USPMotionWarpingComponent : public UMotionWarpingComponent
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
 };

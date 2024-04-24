@@ -12,18 +12,17 @@ class UItemInstance;
 UCLASS()
 class STUDYPROJECT_API USPAnimInstance : public UAnimInstance
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 protected:
     const UItemStaticData* GetEquippedItemData() const;
-    
-	UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
+
+    UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
     class UBlendSpace* GetLocomotionBlendSpace() const;
 
-	UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
+    UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
     class UAnimSequenceBase* GetIdleAnimation() const;
 
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animation")
-	class UCharacterAnimationDataAsset* DefaultAnimationData;
-	
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animation")
+    class UCharacterAnimationDataAsset* DefaultAnimationData;
 };

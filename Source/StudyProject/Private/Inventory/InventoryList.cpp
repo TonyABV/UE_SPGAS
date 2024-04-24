@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Inventory/InventoryList.h"
 
 #include "GameplayTagContainer.h"
@@ -40,7 +39,7 @@ void FInventoryList::RemoveItem(UInventoryItemInstance* InItemInstance)
     for (auto ItemIter = Items.CreateIterator(); ItemIter; ++ItemIter)
     {
         FInventoryListItem& Item = *ItemIter;
-        if(Item.ItemInstance && Item.ItemInstance == InItemInstance)
+        if (Item.ItemInstance && Item.ItemInstance == InItemInstance)
         {
             ItemIter.RemoveCurrent();
             MarkArrayDirty();
@@ -52,11 +51,11 @@ void FInventoryList::RemoveItem(UInventoryItemInstance* InItemInstance)
 TArray<UInventoryItemInstance*> FInventoryList::GetAllItemInstancesWithTag(FGameplayTag InTag)
 {
     TArray<UInventoryItemInstance*> OutInstances;
-    
+
     for (auto ItemIter = Items.CreateIterator(); ItemIter; ++ItemIter)
     {
         FInventoryListItem& Item = *ItemIter;
-        if(Item.ItemInstance->GetItemStaticData()->InventoryTags.Contains(InTag))
+        if (Item.ItemInstance->GetItemStaticData()->InventoryTags.Contains(InTag))
         {
             OutInstances.Add(Item.ItemInstance);
         }
@@ -68,7 +67,7 @@ TArray<UInventoryItemInstance*> FInventoryList::GetAllItemInstancesWithTag(FGame
 TArray<UInventoryItemInstance*> FInventoryList::GetAllAvailableInstancesOfType(TSubclassOf<UItemStaticData> InItemStaticDataClass)
 {
     TArray<UInventoryItemInstance*> OutInstances;
-    
+
     for (auto ItemIter = Items.CreateIterator(); ItemIter; ++ItemIter)
     {
         FInventoryListItem& Item = *ItemIter;
@@ -78,7 +77,7 @@ TArray<UInventoryItemInstance*> FInventoryList::GetAllAvailableInstancesOfType(T
         const bool bSameType = ItemStaticData->IsA(InItemStaticDataClass);
         const bool bHasCapacity = ItemStaticData->MaxStackCount > Item.ItemInstance->GetQuantity();
 
-        if(bSameType && bHasCapacity)
+        if (bSameType && bHasCapacity)
         {
             OutInstances.Add(Item.ItemInstance);
         }

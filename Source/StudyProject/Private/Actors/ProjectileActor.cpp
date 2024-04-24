@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Actors/ProjectileActor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "SPStatics.h"
@@ -8,15 +7,14 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
-static TAutoConsoleVariable<int32> CVarShowProjectile(
-    TEXT("ShowDebugProjectile"), //
-    0, //
-    TEXT("Draws debug info about projectiles"), //
+static TAutoConsoleVariable<int32> CVarShowProjectile(TEXT("ShowDebugProjectile"),  //
+    0,                                                                              //
+    TEXT("Draws debug info about projectiles"),                                     //
     ECVF_Cheat);
 
 AProjectileActor::AProjectileActor()
 {
-	PrimaryActorTick.bCanEverTick = false;
+    PrimaryActorTick.bCanEverTick = false;
     SetReplicatingMovement(true);
     bReplicates = true;
 
@@ -32,13 +30,11 @@ AProjectileActor::AProjectileActor()
     StaticMeshComponent->SetIsReplicated(true);
     StaticMeshComponent->SetCollisionProfileName("Projectile");
     StaticMeshComponent->bReceivesDecals = false;
-    
-    
 }
 
 const UProjectileStaticData* AProjectileActor::GetProjectileStaticData() const
 {
-    if(IsValid(ProjectileDataClass))
+    if (IsValid(ProjectileDataClass))
     {
         return GetDefault<UProjectileStaticData>(ProjectileDataClass);
     }
@@ -47,13 +43,13 @@ const UProjectileStaticData* AProjectileActor::GetProjectileStaticData() const
 
 void AProjectileActor::BeginPlay()
 {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
     const UProjectileStaticData* ProjectileStaticData = GetProjectileStaticData();
 
-    if(ProjectileStaticData && ProjectileMovementComponent)
+    if (ProjectileStaticData && ProjectileMovementComponent)
     {
-        if(ProjectileStaticData->StaticMesh)
+        if (ProjectileStaticData->StaticMesh)
         {
             StaticMeshComponent->SetStaticMesh(ProjectileStaticData->StaticMesh);
         }
@@ -70,23 +66,22 @@ void AProjectileActor::BeginPlay()
 
     const int32 DebugShowProjectile = CVarShowProjectile.GetValueOnAnyThread();
 
-    if(DebugShowProjectile)
+    if (DebugShowProjectile)
     {
         DebugDrawPath();
     }
-    
 }
 
 void AProjectileActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     const UProjectileStaticData* ProjectileStaticData = GetProjectileStaticData();
 
-    if(ProjectileStaticData)
+    if (ProjectileStaticData)
     {
         UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ProjectileStaticData->OnStopSFX, GetActorLocation());
         UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ProjectileStaticData->OnStopVFX, GetActorLocation());
     }
-    
+
     Super::EndPlay(EndPlayReason);
 }
 
@@ -98,9 +93,10 @@ void AProjectileActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 }
 
 void AProjectileActor::DebugDrawPath() const
-{ const UProjectileStaticData* ProjectileStaticData = GetProjectileStaticData();
- 
-    if(ProjectileStaticData)
+{
+    const UProjectileStaticData* ProjectileStaticData = GetProjectileStaticData();
+
+    if (ProjectileStaticData)
     {
         FPredictProjectilePathParams PredictParams;
         PredictParams.StartLocation = GetActorLocation();
@@ -110,10 +106,11 @@ void AProjectileActor::DebugDrawPath() const
         PredictParams.bTraceWithCollision = true;
         PredictParams.DrawDebugType = EDrawDebugTrace::ForDuration;
         PredictParams.DrawDebugTime = 3.f;
-        PredictParams.OverrideGravityZ = ProjectileStaticData->GravityMultiplayer == 0.f ? 0.0001f : ProjectileStaticData->GravityMultiplayer;
+        PredictParams.OverrideGravityZ =
+            ProjectileStaticData->GravityMultiplayer == 0.f ? 0.0001f : ProjectileStaticData->GravityMultiplayer;
 
         FPredictProjectilePathResult PredictResult;
-        if(UGameplayStatics::PredictProjectilePath(GetWorld(), PredictParams, PredictResult))
+        if (UGameplayStatics::PredictProjectilePath(GetWorld(), PredictParams, PredictResult))
         {
             DrawDebugSphere(GetWorld(), PredictResult.HitResult.Location, 50.f, 16, FColor::Red);
         }
@@ -121,17 +118,14 @@ void AProjectileActor::DebugDrawPath() const
 }
 
 void AProjectileActor::OnProjectileStop(const FHitResult& ImpactResult)
-{ const UProjectileStaticData* ProjectileStaticData = GetProjectileStaticData();
-  
-    if(ProjectileStaticData)
+{
+    const UProjectileStaticData* ProjectileStaticData = GetProjectileStaticData();
+
+    if (ProjectileStaticData)
     {
-        USPStatics::ApplyRadialDamage(this, GetOwner(), GetActorLocation(), //
-            ProjectileStaticData->DamageRadius,
-            ProjectileStaticData->BaseDamage,
-            ProjectileStaticData->Effects,
-            ProjectileStaticData->RadialDamageQueryTypes,
-            ProjectileStaticData->RadialDamageTraceType);
+        USPStatics::ApplyRadialDamage(this, GetOwner(), GetActorLocation(),  //
+            ProjectileStaticData->DamageRadius, ProjectileStaticData->BaseDamage, ProjectileStaticData->Effects,
+            ProjectileStaticData->RadialDamageQueryTypes, ProjectileStaticData->RadialDamageTraceType);
     }
     Destroy();
 }
-

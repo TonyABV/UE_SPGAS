@@ -8,17 +8,17 @@
 #include "SPAnimNotify_Step.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class STUDYPROJECT_API USPAnimNotify_Step : public UAnimNotify
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
+    virtual void Notify(
+        USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 
 public:
-
-	UPROPERTY(EditAnywhere)
-	EFoot Foot;
+    UPROPERTY(EditAnywhere)
+    EFoot Foot;
 };

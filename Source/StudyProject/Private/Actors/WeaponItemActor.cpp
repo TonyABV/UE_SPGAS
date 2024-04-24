@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Actors/WeaponItemActor.h"
 
 #include "Inventory/InventoryItemInstance.h"
@@ -11,9 +10,7 @@
 #include "PhysicalMaterials/SPPhysicalMaterial.h"
 #include "NiagaraFunctionLibrary.h"
 
-AWeaponItemActor::AWeaponItemActor()
-{
-}
+AWeaponItemActor::AWeaponItemActor() {}
 
 const UWeaponStaticData* AWeaponItemActor::GetWeaponStaticData() const
 {
@@ -27,7 +24,7 @@ FVector AWeaponItemActor::GetMuzzleLocation() const
 
 void AWeaponItemActor::PlayWeaponEffects(const FHitResult& InHitResult)
 {
-    if(HasAuthority())
+    if (HasAuthority())
     {
         MulticastPlayWeaponEffect(InHitResult);
     }
@@ -39,15 +36,15 @@ void AWeaponItemActor::PlayWeaponEffects(const FHitResult& InHitResult)
 
 void AWeaponItemActor::PlayWeaponEffectInternal(const FHitResult& InHitResult)
 {
-    if(InHitResult.PhysMaterial.Get())
+    if (InHitResult.PhysMaterial.Get())
     {
-        if(USPPhysicalMaterial* PhysicalMaterial = Cast<USPPhysicalMaterial>(InHitResult.PhysMaterial.Get()))
+        if (USPPhysicalMaterial* PhysicalMaterial = Cast<USPPhysicalMaterial>(InHitResult.PhysMaterial.Get()))
         {
             UGameplayStatics::PlaySoundAtLocation(this, PhysicalMaterial->PointImpactSound, InHitResult.ImpactPoint);
             UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, PhysicalMaterial->PointImpactVFX, InHitResult.ImpactPoint);
         }
     }
-    if(const UWeaponStaticData* WeaponStaticData = GetWeaponStaticData())
+    if (const UWeaponStaticData* WeaponStaticData = GetWeaponStaticData())
     {
         UGameplayStatics::PlaySoundAtLocation(this, WeaponStaticData->AttackSound, GetActorLocation());
     }
@@ -55,7 +52,7 @@ void AWeaponItemActor::PlayWeaponEffectInternal(const FHitResult& InHitResult)
 
 void AWeaponItemActor::MulticastPlayWeaponEffect_Implementation(const FHitResult& InHitResult)
 {
-    if(!Owner || Owner->GetLocalRole() != ROLE_AutonomousProxy)
+    if (!Owner || Owner->GetLocalRole() != ROLE_AutonomousProxy)
     {
         PlayWeaponEffectInternal(InHitResult);
     }
@@ -65,14 +62,14 @@ void AWeaponItemActor::InitInternal()
 {
     Super::InitInternal();
 
-    if(const UWeaponStaticData* WeaponData = GetWeaponStaticData())
+    if (const UWeaponStaticData* WeaponData = GetWeaponStaticData())
     {
-        if(WeaponData->SkeletalMesh)
+        if (WeaponData->SkeletalMesh)
         {
-            USkeletalMeshComponent* SkeletalMeshComponent = NewObject<USkeletalMeshComponent>(this, //
-                USkeletalMeshComponent::StaticClass(),//
+            USkeletalMeshComponent* SkeletalMeshComponent = NewObject<USkeletalMeshComponent>(this,  //
+                USkeletalMeshComponent::StaticClass(),                                               //
                 "SkeletalMeshComponent");
-            if(SkeletalMeshComponent)
+            if (SkeletalMeshComponent)
             {
                 SkeletalMeshComponent->RegisterComponent();
                 SkeletalMeshComponent->SetSkeletalMesh(WeaponData->SkeletalMesh);
@@ -81,12 +78,12 @@ void AWeaponItemActor::InitInternal()
                 MeshComponent = SkeletalMeshComponent;
             }
         }
-        else if(WeaponData->StaticMesh)
+        else if (WeaponData->StaticMesh)
         {
-            UStaticMeshComponent* StaticMeshComponent = NewObject<UStaticMeshComponent>(this, //
-                UStaticMeshComponent::StaticClass(),//
+            UStaticMeshComponent* StaticMeshComponent = NewObject<UStaticMeshComponent>(this,  //
+                UStaticMeshComponent::StaticClass(),                                           //
                 "SkeletalMeshComponent");
-            if(StaticMeshComponent)
+            if (StaticMeshComponent)
             {
                 StaticMeshComponent->RegisterComponent();
                 StaticMeshComponent->SetStaticMesh(WeaponData->StaticMesh);
@@ -96,7 +93,7 @@ void AWeaponItemActor::InitInternal()
             }
         }
 
-        if(IsValid(MeshComponent))
+        if (IsValid(MeshComponent))
         {
             MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         }

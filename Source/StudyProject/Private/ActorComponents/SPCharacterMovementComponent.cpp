@@ -6,10 +6,9 @@
 #include "AbilitySystemComponent.h"
 #include "GameFramework/Character.h"
 
-static TAutoConsoleVariable<int32> CVarShowTraversal(
-    TEXT("ShowDebugTraversal"), //
-    0, //
-    TEXT("Draws debug info about traversal"), //
+static TAutoConsoleVariable<int32> CVarShowTraversal(TEXT("ShowDebugTraversal"),  //
+    0,                                                                            //
+    TEXT("Draws debug info about traversal"),                                     //
     ECVF_Cheat);
 
 bool USPCharacterMovementComponent::TryTraversal(UAbilitySystemComponent* ASC)
@@ -34,11 +33,13 @@ void USPCharacterMovementComponent::BeginPlay()
     Super::BeginPlay();
 
     HandleMovementDirection();
-    
-    if(UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwner()))
+
+    if (UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwner()))
     {
-        AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(TEXT("Movement.Enforced.Strafe"), //
-            EGameplayTagEventType::NewOrRemoved)).AddUObject(this, &USPCharacterMovementComponent::OnEnforcedStrafeTagChanged);
+        AbilitySystemComponent
+            ->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(TEXT("Movement.Enforced.Strafe"),  //
+                EGameplayTagEventType::NewOrRemoved))
+            .AddUObject(this, &USPCharacterMovementComponent::OnEnforcedStrafeTagChanged);
     }
 }
 
@@ -56,7 +57,7 @@ void USPCharacterMovementComponent::SetMovementDirectionType(EMovementDirectionT
 
 void USPCharacterMovementComponent::OnEnforcedStrafeTagChanged(const FGameplayTag CallbackTag, int32 NewCound)
 {
-    if(NewCound)
+    if (NewCound)
     {
         SetMovementDirectionType(EMovementDirectionType::Strafe);
     }
@@ -72,13 +73,13 @@ void USPCharacterMovementComponent::HandleMovementDirection()
     {
         case EMovementDirectionType::Strafe:
             bUseControllerDesiredRotation = true;
-        bOrientRotationToMovement = false;
-        CharacterOwner->bUseControllerRotationYaw = true;
-        break;
+            bOrientRotationToMovement = false;
+            CharacterOwner->bUseControllerRotationYaw = true;
+            break;
         default:
             bUseControllerDesiredRotation = false;
-        bOrientRotationToMovement = true;
-        CharacterOwner->bUseControllerRotationYaw = false;
-        break;
+            bOrientRotationToMovement = true;
+            CharacterOwner->bUseControllerRotationYaw = false;
+            break;
     }
 }

@@ -10,27 +10,25 @@
 #include "Abilities/GameplayAbilityTypes.h"
 #include "InventoryComponent.generated.h"
 
-
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class STUDYPROJECT_API UInventoryComponent : public UActorComponent
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-public:	
-
-	UInventoryComponent();
+public:
+    UInventoryComponent();
 
     void AddInventoryTags();
 
     virtual void InitializeComponent() override;
 
-	virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
+    virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable)
     void AddItem(TSubclassOf<UItemStaticData> InItemStaticDataClass);
-	UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable)
     void AddItemInstance(UInventoryItemInstance* InItemInstance);
     UFUNCTION(BlueprintCallable)
     void RemoveItem(TSubclassOf<UItemStaticData> InItemStaticDataClass);
@@ -40,7 +38,7 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void RemoveItemInstanceWithInventoryTag(FGameplayTag InventoryTag, int32 Count = 1);
-    
+
     UFUNCTION(BlueprintCallable)
     void EquipItem(TSubclassOf<UItemStaticData> InItemStaticData);
     UFUNCTION(BlueprintCallable)
@@ -48,7 +46,7 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void EquipNext();
-    
+
     UFUNCTION(BlueprintCallable)
     void UnequipItem();
 
@@ -70,15 +68,14 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void AddInventoryTagCount(FGameplayTag InTag, int32 CountDelta);
-    
+
 protected:
+    virtual void BeginPlay() override;
 
-	virtual void BeginPlay() override;
-
-	UPROPERTY(Replicated)
+    UPROPERTY(Replicated)
     FInventoryList InventoryList;
 
-	UPROPERTY(EditDefaultsOnly)
+    UPROPERTY(EditDefaultsOnly)
     TArray<TSubclassOf<UItemStaticData>> DefaultItems;
 
     UPROPERTY(Replicated)
@@ -88,16 +85,14 @@ protected:
     FFastArrayTagCounter InventoryTags;
 
     TArray<UInventoryItemInstance*> GetAllInstancesWithTag(FGameplayTag Tag);
-    
+
     FDelegateHandle TagDelegateHandle;
 
     void HandelGameplayEventInternal(FGameplayEventData Payload);
 
     UFUNCTION(Server, Reliable)
     void ServerHandleGameplayEvent(FGameplayEventData Payload);
-    
-public:	
 
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+public:
+    virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };

@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "AbilitySystem/AbilityTask/AT_WallRunTick.h"
 
 #include "Components/CapsuleComponent.h"
@@ -27,7 +26,7 @@ void UAT_WallRunTick::Activate()
 
     FHitResult OnWallHit;
 
-    //const FVector CurrentAcceleration = CharacterMovement->GetCurrentAcceleration();
+    // const FVector CurrentAcceleration = CharacterMovement->GetCurrentAcceleration();
 
     if (!FindRunnableWall(OnWallHit))
     {
@@ -51,7 +50,7 @@ void UAT_WallRunTick::OnDestroy(bool bInOwnerFinished)
 {
     CharacterMovement->SetPlaneConstraintEnabled(false);
     CharacterMovement->SetMovementMode(MOVE_Falling);
-    
+
     Super::OnDestroy(bInOwnerFinished);
 }
 
@@ -61,7 +60,7 @@ void UAT_WallRunTick::TickTask(float DeltaTime)
 
     FHitResult OnWallHit;
 
-    //const FVector CurrentAcceleration = CharacterMovement->GetCurrentAcceleration();
+    // const FVector CurrentAcceleration = CharacterMovement->GetCurrentAcceleration();
 
     if (!FindRunnableWall(OnWallHit))
     {
@@ -73,7 +72,7 @@ void UAT_WallRunTick::TickTask(float DeltaTime)
 
     const FRotator DirectionRotator = IsWallOnTheLeft(OnWallHit) ?  //
                                           FRotator(0, -90, 0)
-                                                        : FRotator(0, 90, 0);
+                                                                 : FRotator(0, 90, 0);
 
     const FVector WallRunDirection = DirectionRotator.RotateVector(OnWallHit.ImpactNormal);
 
@@ -103,21 +102,21 @@ bool UAT_WallRunTick::FindRunnableWall(FHitResult& OnWallHit)
     const bool bShowTraversal = CVar->GetInt() > 0;
 
     EDrawDebugTrace::Type DebugDrawType = bShowTraversal ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
-    
+
     if (UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), CharacterLocation, CharacterLocation + ForwardVector * TraceLength,
             WallRun_TraceObjectTypes, true, ActorsToIgnore, DebugDrawType, OnWallHit, true))
     {
         return false;
     }
 
-    //LeftTrace
+    // LeftTrace
     if (UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), CharacterLocation, CharacterLocation - RightVector * TraceLength,
             WallRun_TraceObjectTypes, true, ActorsToIgnore, DebugDrawType, OnWallHit, true))
     {
         if (FVector::DotProduct(OnWallHit.ImpactNormal, RightVector) > 0.3f) return true;
     }
 
-    //RightTrace
+    // RightTrace
     if (UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), CharacterLocation, CharacterLocation + RightVector * TraceLength,
             WallRun_TraceObjectTypes, true, ActorsToIgnore, DebugDrawType, OnWallHit, true))
     {

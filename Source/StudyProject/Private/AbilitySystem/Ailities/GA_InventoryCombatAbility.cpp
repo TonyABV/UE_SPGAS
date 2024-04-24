@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "AbilitySystem/Ailities/GA_InventoryCombatAbility.h"
 
 #include "AbilitySystemComponent.h"
@@ -28,7 +27,8 @@ FGameplayEffectSpecHandle UGA_InventoryCombatAbility::GetWeaponEffectSpec(const 
 
             FGameplayEffectSpecHandle OutSpec = AbilityComponent->MakeOutgoingSpec(WeaponStaticData->DamageEffect, 1, EffectContext);
 
-            UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(OutSpec, FGameplayTag::RequestGameplayTag(TEXT("Attribute.Health")), -WeaponStaticData->BaseDamage);
+            UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(
+                OutSpec, FGameplayTag::RequestGameplayTag(TEXT("Attribute.Health")), -WeaponStaticData->BaseDamage);
 
             return OutSpec;
         }
@@ -40,35 +40,34 @@ FGameplayEffectSpecHandle UGA_InventoryCombatAbility::GetWeaponEffectSpec(const 
 const bool UGA_InventoryCombatAbility::GetWeaponToFocusTraceResult(float TraceDistance, ETraceTypeQuery TraceType, FHitResult& OutHitResult)
 {
     AWeaponItemActor* WeaponItemActor = GetEquippedWeaponItemActor();
-    
+
     AStudyProjectCharacter* StudyProjectCharacter = GetSPCharacter();
-    
+
     const FTransform& CameraTransform = StudyProjectCharacter->GetFollowCamera()->GetComponentTransform();
     const FVector FocusTraceEnd = CameraTransform.GetLocation() + CameraTransform.GetRotation().Vector() * TraceDistance;
-    
+
     TArray<AActor*> ActorsToIgnore = {GetAvatarActorFromActorInfo()};
-    
+
     FHitResult FocusHit;
-    
-    UKismetSystemLibrary::LineTraceSingle(this, CameraTransform.GetLocation(), FocusTraceEnd, TraceType, false, ActorsToIgnore, //
+
+    UKismetSystemLibrary::LineTraceSingle(this, CameraTransform.GetLocation(), FocusTraceEnd, TraceType, false, ActorsToIgnore,  //
         EDrawDebugTrace::None, FocusHit, true);
 
     FVector MuzzleLocation = WeaponItemActor->GetMuzzleLocation();
-    
+
     const FVector WeaponTraceEnd = MuzzleLocation + (FocusHit.Location - MuzzleLocation).GetSafeNormal() * TraceDistance;
 
-    UKismetSystemLibrary::LineTraceSingle(this, MuzzleLocation, WeaponTraceEnd, TraceType, //
+    UKismetSystemLibrary::LineTraceSingle(this, MuzzleLocation, WeaponTraceEnd, TraceType,  //
         false, ActorsToIgnore, EDrawDebugTrace::None, OutHitResult, true);
 
     return OutHitResult.bBlockingHit;
-    
 }
 
 bool UGA_InventoryCombatAbility::HasEnoughAmmo() const
 {
-    if(const UWeaponStaticData* WeaponStaticData = GetEquippedWeaponStaticData())
+    if (const UWeaponStaticData* WeaponStaticData = GetEquippedWeaponStaticData())
     {
-        if(UInventoryComponent* Inventory = GetInventoryComponent())
+        if (UInventoryComponent* Inventory = GetInventoryComponent())
         {
             return !WeaponStaticData->AmmoTag.IsValid() || Inventory->GetInventoryTagCount(WeaponStaticData->AmmoTag) > 0;
         }
@@ -78,11 +77,11 @@ bool UGA_InventoryCombatAbility::HasEnoughAmmo() const
 
 void UGA_InventoryCombatAbility::DecAmmo()
 {
-    if(const UWeaponStaticData* WeaponStaticData = GetEquippedWeaponStaticData())
+    if (const UWeaponStaticData* WeaponStaticData = GetEquippedWeaponStaticData())
     {
-        if(!WeaponStaticData->AmmoTag.IsValid()) return;
-        
-        if(UInventoryComponent* Inventory = GetInventoryComponent())
+        if (!WeaponStaticData->AmmoTag.IsValid()) return;
+
+        if (UInventoryComponent* Inventory = GetInventoryComponent())
         {
             Inventory->RemoveItemInstanceWithInventoryTag(WeaponStaticData->AmmoTag, 1);
         }

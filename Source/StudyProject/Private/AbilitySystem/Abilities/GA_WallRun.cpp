@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "AbilitySystem/Abilities/GA_WallRun.h"
 
 #include "AbilitySystemComponent.h"
@@ -31,8 +30,8 @@ void UGA_WallRun::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, cons
 
 void UGA_WallRun::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
-    if(!ActorInfo) return;
-    
+    if (!ActorInfo) return;
+
     AStudyProjectCharacter* CharacterAvatar = Cast<AStudyProjectCharacter>(ActorInfo->AvatarActor);
 
     if (CharacterAvatar && CharacterAvatar->GetCapsuleComponent())
@@ -49,7 +48,7 @@ bool UGA_WallRun::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, co
     if (!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags)) return false;
 
     AStudyProjectCharacter* StudyProjectCharacter = GetSPCharacter();
-    
+
     return StudyProjectCharacter && !StudyProjectCharacter->GetCharacterMovement()->IsMovingOnGround();
 }
 
@@ -58,8 +57,8 @@ void UGA_WallRun::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 {
     Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-    WallRunTickTask = UAT_WallRunTick::CreateWallRunTask(
-        this, Cast<ACharacter>(GetAvatarActorFromActorInfo()), Cast<UCharacterMovementComponent>(ActorInfo->MovementComponent), WallRun_TraceObjectTypes);
+    WallRunTickTask = UAT_WallRunTick::CreateWallRunTask(this, Cast<ACharacter>(GetAvatarActorFromActorInfo()),
+        Cast<UCharacterMovementComponent>(ActorInfo->MovementComponent), WallRun_TraceObjectTypes);
 
     if (IsValid(WallRunTickTask))
     {

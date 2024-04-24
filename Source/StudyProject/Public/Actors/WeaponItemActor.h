@@ -8,12 +8,12 @@
 #include "WeaponItemActor.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class STUDYPROJECT_API AWeaponItemActor : public AItemActor
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
     AWeaponItemActor();
 
@@ -23,12 +23,10 @@ class STUDYPROJECT_API AWeaponItemActor : public AItemActor
     void PlayWeaponEffects(const FHitResult& InHitResult);
 
 public:
-
     UFUNCTION(BlueprintPure)
     FVector GetMuzzleLocation() const;
-    
-protected:
 
+protected:
     UFUNCTION(NetMulticast, Reliable)
     void MulticastPlayWeaponEffect(const FHitResult& InHitResult);
 
@@ -36,7 +34,6 @@ protected:
 
     UPROPERTY()
     UMeshComponent* MeshComponent = nullptr;
-    
-    virtual void InitInternal() override;
 
+    virtual void InitInternal() override;
 };

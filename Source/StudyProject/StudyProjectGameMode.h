@@ -11,14 +11,10 @@ class ASPPlayerController;
 UCLASS(minimalapi)
 class AStudyProjectGameMode : public AGameModeBase
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	AStudyProjectGameMode();
+    AStudyProjectGameMode();
 
     void NotifyPlayerDied(ASPPlayerController* PlayerController);
-    
 };
-
-
-

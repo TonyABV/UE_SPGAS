@@ -7,19 +7,15 @@
 #include "Abilities/GameplayAbilityTypes.h"
 #include "AnimNotify_GameplayEvent.generated.h"
 
-
 UCLASS()
 class STUDYPROJECT_API UAnimNotify_GameplayEvent : public UAnimNotify
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-
     virtual void Notify(USkeletalMeshComponent* MeshComponent, UAnimSequenceBase* Animation) override;
 
 protected:
-
     UPROPERTY(EditAnywhere)
     FGameplayEventData Payload;
-    
 };

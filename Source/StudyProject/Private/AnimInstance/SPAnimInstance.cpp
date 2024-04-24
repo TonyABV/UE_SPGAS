@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "AnimInstance/SPAnimInstance.h"
 #include "StudyProjectCharacter.h"
 #include "Animation/AnimSequenceBase.h"
@@ -21,9 +20,9 @@ UBlendSpace* USPAnimInstance::GetLocomotionBlendSpace() const
 {
     const AStudyProjectCharacter* Character = Cast<AStudyProjectCharacter>(GetOwningActor());
 
-    if(IsValid(Character))
+    if (IsValid(Character))
     {
-        if(const UItemStaticData* ItemStaticData = GetEquippedItemData())
+        if (const UItemStaticData* ItemStaticData = GetEquippedItemData())
         {
             if (Character->bIsCrouched)
             {
@@ -34,8 +33,8 @@ UBlendSpace* USPAnimInstance::GetLocomotionBlendSpace() const
                 return ItemStaticData->CharacterAnimationData.MovementBlendSpace;
             }
         }
-    
-        if(Character->GetCharacterData().CharacterAnimData)
+
+        if (Character->GetCharacterData().CharacterAnimData)
         {
             if (Character->bIsCrouched)
             {
@@ -47,19 +46,18 @@ UBlendSpace* USPAnimInstance::GetLocomotionBlendSpace() const
             }
         }
     }
-    
+
     return DefaultAnimationData ? DefaultAnimationData->CharacterAnimationData.MovementBlendSpace : nullptr;
 }
 
 UAnimSequenceBase* USPAnimInstance::GetIdleAnimation() const
 {
-	
-	
-	const AStudyProjectCharacter* Character = Cast<AStudyProjectCharacter>(GetOwningActor());
 
-    if(IsValid(Character))
+    const AStudyProjectCharacter* Character = Cast<AStudyProjectCharacter>(GetOwningActor());
+
+    if (IsValid(Character))
     {
-        if(const UItemStaticData* ItemStaticData = GetEquippedItemData())
+        if (const UItemStaticData* ItemStaticData = GetEquippedItemData())
         {
             if (Character->bIsCrouched)
             {
@@ -70,8 +68,8 @@ UAnimSequenceBase* USPAnimInstance::GetIdleAnimation() const
                 return ItemStaticData->CharacterAnimationData.IdleAnimationAsset;
             }
         }
-	
-        if(Character->GetCharacterData().CharacterAnimData)
+
+        if (Character->GetCharacterData().CharacterAnimData)
         {
             if (Character->bIsCrouched)
             {
@@ -83,5 +81,5 @@ UAnimSequenceBase* USPAnimInstance::GetIdleAnimation() const
             }
         }
     }
-	return DefaultAnimationData ? DefaultAnimationData->CharacterAnimationData.IdleAnimationAsset : nullptr;
+    return DefaultAnimationData ? DefaultAnimationData->CharacterAnimationData.IdleAnimationAsset : nullptr;
 }

@@ -22,51 +22,51 @@ class USPMotionWarpingComponent;
 class USPCharacterMovementComponent;
 class UInventoryComponent;
 
-UCLASS(config=Game)
+UCLASS(config = Game)
 class AStudyProjectCharacter : public ACharacter, public IAbilitySystemInterface
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* CameraBoom;
+    /** Camera boom positioning the camera behind the character */
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+    class USpringArmComponent* CameraBoom;
 
-	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FollowCamera;
-	
-	/** MappingContext */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputMappingContext* DefaultMappingContext;
+    /** Follow camera */
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+    class UCameraComponent* FollowCamera;
 
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* JumpAction;
+    /** MappingContext */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    class UInputMappingContext* DefaultMappingContext;
 
-	/** Move Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* MoveAction;
+    /** Jump Input Action */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    class UInputAction* JumpAction;
 
-	/** Look Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* LookAction;
+    /** Move Input Action */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    class UInputAction* MoveAction;
 
-	/** Crouch Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* CrouchAction;
+    /** Look Input Action */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    class UInputAction* LookAction;
 
-	/** Crouch Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* SprintAction;
+    /** Crouch Input Action */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    class UInputAction* CrouchAction;
+
+    /** Crouch Input Action */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    class UInputAction* SprintAction;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* EquipNextInputAction;
-    
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* DropItemInputAction;
+    class UInputAction* EquipNextInputAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* UnequipInputAction;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    class UInputAction* DropItemInputAction;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    class UInputAction* UnequipInputAction;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     class UInputAction* AttackInputAction;
@@ -77,169 +77,157 @@ class AStudyProjectCharacter : public ACharacter, public IAbilitySystemInterface
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = MotionWarp, meta = (AllowPrivateAccess = "true"))
     USPMotionWarpingComponent* MotionWarpingComponent;
 
-	UPROPERTY(VisibleAnywhere, Replicated, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, Replicated, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     UInventoryComponent* InventoryComponent;
 
-	USPCharacterMovementComponent* SPMovementComponent = nullptr;
+    USPCharacterMovementComponent* SPMovementComponent = nullptr;
 
 public:
+    AStudyProjectCharacter(const FObjectInitializer& ObjectInitializer);
 
-	AStudyProjectCharacter(const FObjectInitializer& ObjectInitializer);
-	
-	bool ApplayGameplayEffectToSelf(TSubclassOf<UGameplayEffect> Effect, FGameplayEffectContextHandle InEffectContext);
+    bool ApplayGameplayEffectToSelf(TSubclassOf<UGameplayEffect> Effect, FGameplayEffectContextHandle InEffectContext);
 
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+    virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	UFUNCTION(BlueprintCallable)
-	FCharacterData GetCharacterData() const { return CharacterData; }
+    UFUNCTION(BlueprintCallable)
+    FCharacterData GetCharacterData() const { return CharacterData; }
 
-	UFUNCTION(BlueprintCallable)
-	void SetCharacterData(const FCharacterData& InCharacterData);
+    UFUNCTION(BlueprintCallable)
+    void SetCharacterData(const FCharacterData& InCharacterData);
 
-	virtual void PostLoad() override;
+    virtual void PostLoad() override;
 
-	USPFootstepsComponent* GetFootStepComponent() const { return FootstepsComponent; }
+    USPFootstepsComponent* GetFootStepComponent() const { return FootstepsComponent; }
 
-	virtual void Landed(const FHitResult& Hit) override;
+    virtual void Landed(const FHitResult& Hit) override;
 
-	virtual void OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+    virtual void OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
     virtual void OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
 
-	UPROPERTY(EditDefaultsOnly)
-	UCharacterDataAsset* CharacterDataAsset;
+    UPROPERTY(EditDefaultsOnly)
+    UCharacterDataAsset* CharacterDataAsset;
 
-	UPROPERTY(BlueprintReadOnly)
-	USPFootstepsComponent* FootstepsComponent;
+    UPROPERTY(BlueprintReadOnly)
+    USPFootstepsComponent* FootstepsComponent;
 
-	UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable)
     USPMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
 
-    
-    UInventoryComponent* GetInventoryComponent() const { return  InventoryComponent; }
+    UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
 
     void StartRagdoll();
-    
+
 protected:
-	
-	void GiveAbilities();
-	void ApplyStartupEffects();
+    void GiveAbilities();
+    void ApplyStartupEffects();
 
-	virtual void PossessedBy(AController* NewController) override;
-	virtual void OnRep_PlayerState() override;
+    virtual void PossessedBy(AController* NewController) override;
+    virtual void OnRep_PlayerState() override;
 
-	UPROPERTY(EditDefaultsOnly)
-	USP_AbilitySystemComponentBase* AbilitySystemComponent;
+    UPROPERTY(EditDefaultsOnly)
+    USP_AbilitySystemComponentBase* AbilitySystemComponent;
 
-	UPROPERTY(Transient)
-	USPAttributeSetBase* AttributeSet;
+    UPROPERTY(Transient)
+    USPAttributeSetBase* AttributeSet;
 
-	UPROPERTY(ReplicatedUsing = OnRep_CharacterData)
-	FCharacterData CharacterData;
+    UPROPERTY(ReplicatedUsing = OnRep_CharacterData)
+    FCharacterData CharacterData;
 
-	UFUNCTION()
-	void OnRep_CharacterData();
+    UFUNCTION()
+    void OnRep_CharacterData();
 
-	void OnJump(const FInputActionValue& InputActionValue);
+    void OnJump(const FInputActionValue& InputActionValue);
 
-	void OnStopJumping(const FInputActionValue& InputActionValue);
+    void OnStopJumping(const FInputActionValue& InputActionValue);
 
-	/** Called for movement input */
-	void Move(const FInputActionValue& Value);
+    /** Called for movement input */
+    void Move(const FInputActionValue& Value);
 
-	/** Called for looking input */
-	void Look(const FInputActionValue& Value);
+    /** Called for looking input */
+    void Look(const FInputActionValue& Value);
 
     void OnCrouch(const FInputActionValue& InputActionValue);
-	
+
     void OuStopCrouch(const FInputActionValue& InputActionValue);
-	
+
     void OnSprint(const FInputActionValue& InputActionValue);
-	
+
     void OnStopSprint(const FInputActionValue& InputActionValue);
 
     void OnDropItemTriggered(const FInputActionValue& InputActionValue);
-    	
+
     void OnEquipNextTriggered(const FInputActionValue& InputActionValue);
-    	
+
     void OnUnequipTriggered(const FInputActionValue& InputActionValue);
 
     void OnAttackActionStarted(const FInputActionValue& InputActionValue);
 
     void OnAttackActionEnded(const FInputActionValue& InputActionValue);
-    
+
     void OnAimActionStarted(const FInputActionValue& InputActionValue);
 
     void OnAimActionEnded(const FInputActionValue& InputActionValue);
-    
-	virtual void InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication = false);
+
+    virtual void InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication = false);
 
     UFUNCTION()
     void OnRagdollStateChanged(const FGameplayTag CallbackTag, int32 NewCount);
-    
-protected:// APawn interface
 
+protected:  // APawn interface
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	// To add mapping context
-	virtual void BeginPlay();
+
+    // To add mapping context
+    virtual void BeginPlay();
 
 public:
-	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
-	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+    /** Returns CameraBoom subobject **/
+    FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+    /** Returns FollowCamera subobject **/
+    FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	
-protected: // Gameplay Events
+protected:  // Gameplay Events
+    UPROPERTY(EditDefaultsOnly)
+    FGameplayTag JumpEventTag;
 
-	UPROPERTY(EditDefaultsOnly)
-	FGameplayTag JumpEventTag;
-    
     UPROPERTY(EditDefaultsOnly)
     FGameplayTag StartAttackEventTag;
-    
+
     UPROPERTY(EditDefaultsOnly)
     FGameplayTag EndAttackEventTag;
-      
+
     UPROPERTY(EditDefaultsOnly)
     FGameplayTag StartAimEventTag;
-    
+
     UPROPERTY(EditDefaultsOnly)
     FGameplayTag EndAimEventTag;
-	
+
     UPROPERTY(EditDefaultsOnly)
     FGameplayTag ZeroHealthEventTag;
-    
-protected: // Gameplay Tags
 
-	UPROPERTY(EditDefaultsOnly)
-	FGameplayTagContainer InAirTags;
+protected:  // Gameplay Tags
+    UPROPERTY(EditDefaultsOnly)
+    FGameplayTagContainer InAirTags;
 
-	UPROPERTY(EditDefaultsOnly)
-	FGameplayTagContainer CrouchTags;
+    UPROPERTY(EditDefaultsOnly)
+    FGameplayTagContainer CrouchTags;
 
-	UPROPERTY(EditDefaultsOnly)
-	FGameplayTagContainer SprintTags;
+    UPROPERTY(EditDefaultsOnly)
+    FGameplayTagContainer SprintTags;
 
-	UPROPERTY(EditDefaultsOnly)
-	FGameplayTagContainer RagdolStateTag;
-    
-protected: // Gameplay Effects
+    UPROPERTY(EditDefaultsOnly)
+    FGameplayTagContainer RagdolStateTag;
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UGameplayEffect> CrouchStateEffect;
+protected:  // Gameplay Effects
+    UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<UGameplayEffect> CrouchStateEffect;
 
-protected: //Delegates
-
-	FDelegateHandle MaxMoveSpeedChangedDelegateHandle;
+protected:  // Delegates
+    FDelegateHandle MaxMoveSpeedChangedDelegateHandle;
 
 private:
-
-	void OnMaxMovementSpeedChanged(const FOnAttributeChangeData& Data);
+    void OnMaxMovementSpeedChanged(const FOnAttributeChangeData& Data);
 
     void OnHealthAttributeChanged(const FOnAttributeChangeData& Data);
-    
 };
-

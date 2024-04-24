@@ -7,22 +7,19 @@
 #include "AmmoItemActor.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class STUDYPROJECT_API AAmmoItemActor : public AItemActor
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-
     const UAmmoItemStaticData* GetAmmoItemStaticData() const;
 
 protected:
-
     UPROPERTY()
     UMeshComponent* MeshComponent = nullptr;
 
     virtual void InitInternal() override;
-    
 };

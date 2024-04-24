@@ -7,14 +7,13 @@
 #include "SPGameInstance.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class STUDYPROJECT_API USPGameInstance : public UGameInstance
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-
-	virtual void Init() override;
+    virtual void Init() override;
 };

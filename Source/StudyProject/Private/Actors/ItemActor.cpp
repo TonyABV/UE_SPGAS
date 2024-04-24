@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Actors/ItemActor.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
@@ -19,7 +18,7 @@ AItemActor::AItemActor()
     bReplicates = true;
 
     SetReplicateMovement(true);
-    
+
     SphereComponent = CreateDefaultSubobject<USphereComponent>("USphereComponent");
     SphereComponent->SetupAttachment(RootComponent);
     SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AItemActor::OnSphereBeginOverlap);
@@ -37,16 +36,15 @@ void AItemActor::OnUnequipped()
     ItemState = EItemState::None;
     SphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     SphereComponent->SetGenerateOverlapEvents(false);
-
 }
 
 void AItemActor::OnDropped()
 {
     ItemState = EItemState::Dropped;
-    
+
     GetRootComponent()->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 
-    if(AActor* ItemOwner = GetOwner())
+    if (AActor* ItemOwner = GetOwner())
     {
         FVector TraceStart = GetActorLocation() + ItemOwner->GetActorForwardVector() * 100.f;
         FVector TraceEnd = TraceStart - FVector::UpVector * 1000.f;
@@ -54,7 +52,7 @@ void AItemActor::OnDropped()
         FHitResult HitResult;
 
         FVector TargetLocation = TraceEnd;
-        
+
         if (UKismetSystemLibrary::LineTraceSingleByProfile(
                 GetWorld(), TraceStart, TraceEnd, FName("WorldStatic"), true, {this}, EDrawDebugTrace::ForDuration, HitResult, true))
         {
@@ -63,10 +61,10 @@ void AItemActor::OnDropped()
                 TargetLocation = HitResult.Location;
             }
         }
-        
+
         SetActorLocation(TargetLocation);
     }
-    
+
     SphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
     SphereComponent->SetGenerateOverlapEvents(true);
 }
@@ -95,7 +93,7 @@ void AItemActor::Init(UInventoryItemInstance* InInstance)
 void AItemActor::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
     int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if(HasAuthority())
+    if (HasAuthority())
     {
         FGameplayEventData EventPayload;
         EventPayload.OptionalObject = ItemInstance;
@@ -108,26 +106,26 @@ void AItemActor::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 
 void AItemActor::BeginPlay()
 {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
-    if(HasAuthority())
+    if (HasAuthority())
     {
-        if(!IsValid(ItemInstance) && IsValid(StaticDataClass))
+        if (!IsValid(ItemInstance) && IsValid(StaticDataClass))
         {
             ItemInstance = NewObject<UInventoryItemInstance>();
-            ItemInstance->Init(StaticDataClass, Quantity );
-            
+            ItemInstance->Init(StaticDataClass, Quantity);
+
             SphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
             SphereComponent->SetGenerateOverlapEvents(true);
 
             InitInternal();
         }
-    } 
+    }
 }
 
 void AItemActor::OnRep_ItemInstance(UInventoryItemInstance* OldItemInstance)
 {
-    if(!IsValid(OldItemInstance) && IsValid(ItemInstance))
+    if (!IsValid(OldItemInstance) && IsValid(ItemInstance))
     {
         InitInternal();
     }
@@ -148,13 +146,9 @@ void AItemActor::OnRep_ItemState()
     }
 }
 
-void AItemActor::InitInternal()
-{
-}
+void AItemActor::InitInternal() {}
 
 void AItemActor::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-
+    Super::Tick(DeltaTime);
 }
-

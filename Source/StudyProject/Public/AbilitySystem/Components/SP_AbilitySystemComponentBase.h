@@ -7,11 +7,10 @@
 #include "SP_AbilitySystemComponentBase.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class STUDYPROJECT_API USP_AbilitySystemComponentBase : public UAbilitySystemComponent
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
 };

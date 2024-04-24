@@ -8,19 +8,17 @@
 #include "SPPlayerController.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class STUDYPROJECT_API ASPPlayerController : public APlayerController
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-
     void RestartPlayerIn(float InTime);
 
 protected:
-
     virtual void OnPossess(APawn* InPawn) override;
     virtual void OnUnPossess() override;
 
@@ -32,5 +30,4 @@ protected:
     FTimerHandle RestartPlayerTimerHandle;
 
     FDelegateHandle DeathStateTagDelegate;
-	
 };

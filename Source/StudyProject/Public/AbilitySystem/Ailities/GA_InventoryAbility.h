@@ -16,10 +16,9 @@ class AWeaponItemActor;
 UCLASS()
 class STUDYPROJECT_API UGA_InventoryAbility : public USPGameplayAbility
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-
     virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 
     UFUNCTION(BlueprintPure)
@@ -41,8 +40,6 @@ public:
     AWeaponItemActor* GetEquippedWeaponItemActor() const;
 
 protected:
-
     UPROPERTY()
     UInventoryComponent* InventoryComponent = nullptr;
-    
 };

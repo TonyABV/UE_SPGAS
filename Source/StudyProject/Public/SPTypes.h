@@ -16,43 +16,41 @@ class UNiagaraSystem;
 USTRUCT(BlueprintType)
 struct FCharacterData
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS")
-	TArray<TSubclassOf<class UGameplayEffect>> Effects;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS")
+    TArray<TSubclassOf<class UGameplayEffect>> Effects;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS")
-	TArray<TSubclassOf<class UGameplayAbility>> Abilities;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS")
+    TArray<TSubclassOf<class UGameplayAbility>> Abilities;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
-	class UCharacterAnimationDataAsset* CharacterAnimData;
-	
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+    class UCharacterAnimationDataAsset* CharacterAnimData;
 };
 
 USTRUCT(BlueprintType)
 struct FCharacterAnimationData
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly)
-	class UBlendSpace* MovementBlendSpace = nullptr;
+    UPROPERTY(EditDefaultsOnly)
+    class UBlendSpace* MovementBlendSpace = nullptr;
 
-	UPROPERTY(EditDefaultsOnly)
-	class UAnimSequenceBase* IdleAnimationAsset = nullptr;
+    UPROPERTY(EditDefaultsOnly)
+    class UAnimSequenceBase* IdleAnimationAsset = nullptr;
 
-	UPROPERTY(EditDefaultsOnly)
-	class UBlendSpace* CrouchingBlendSpace = nullptr;
+    UPROPERTY(EditDefaultsOnly)
+    class UBlendSpace* CrouchingBlendSpace = nullptr;
 
-	UPROPERTY(EditDefaultsOnly)
-	class UAnimSequenceBase* CrouchIdleAnimationAsset = nullptr;
-
+    UPROPERTY(EditDefaultsOnly)
+    class UAnimSequenceBase* CrouchIdleAnimationAsset = nullptr;
 };
 
 UENUM(BlueprintType)
 enum class EFoot : uint8
 {
-	Left UMETA(DisplayName = "Left"),
-	Right UMETA(DisplayName = "Right")
+    Left UMETA(DisplayName = "Left"),
+    Right UMETA(DisplayName = "Right")
 };
 
 UCLASS(BlueprintType, Blueprintable)
@@ -61,19 +59,18 @@ class UItemStaticData : public UObject
     GENERATED_BODY()
 
 public:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     FName Name;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     TSubclassOf<AItemActor> ItemActorClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     FName AttachmentSocket = NAME_None;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     bool bCanBeEquipped = false;
-    
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     FCharacterAnimationData CharacterAnimationData;
 
@@ -88,7 +85,6 @@ public:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     int32 MaxStackCount = 1;
-    
 };
 
 UCLASS(BlueprintType, Blueprintable)
@@ -97,7 +93,6 @@ class UWeaponStaticData : public UItemStaticData
     GENERATED_BODY()
 
 public:
-
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     TSubclassOf<UGameplayEffect> DamageEffect;
 
@@ -112,16 +107,15 @@ public:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     float FireRate;
-    
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     float BaseDamage;
-    
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     USoundBase* AttackSound;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     FGameplayTag AmmoTag;
-    
 };
 UCLASS(BlueprintType, Blueprintable)
 class UAmmoItemStaticData : public UItemStaticData
@@ -129,10 +123,8 @@ class UAmmoItemStaticData : public UItemStaticData
     GENERATED_BODY()
 
 public:
-
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     UStaticMesh* StaticMesh = nullptr;
-    
 };
 
 UENUM(BlueprintType)
@@ -149,9 +141,7 @@ enum class EMovementDirectionType : uint8
     None UMETA(DisplayName = "None"),
     OrientToMovement UMETA(DisplayName = "OrientToMovement"),
     Strafe UMETA(DisplayName = "Strafe")
-    
 };
-
 
 UCLASS(BlueprintType, Blueprintable)
 class UProjectileStaticData : public UObject
@@ -159,19 +149,18 @@ class UProjectileStaticData : public UObject
     GENERATED_BODY()
 
 public:
-
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     float BaseDamage;
-    
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     float DamageRadius;
-    
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     float GravityMultiplayer;
-    
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     float InitialSpeed;
-    
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     float MaxSpeed;
 
@@ -188,9 +177,8 @@ public:
     TEnumAsByte<ETraceTypeQuery> RadialDamageTraceType;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-    UNiagaraSystem*  OnStopVFX = nullptr;
+    UNiagaraSystem* OnStopVFX = nullptr;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     USoundBase* OnStopSFX = nullptr;
-
 };

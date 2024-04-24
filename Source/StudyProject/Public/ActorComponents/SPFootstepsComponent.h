@@ -7,28 +7,23 @@
 #include "SPTypes.h"
 #include "SPFootstepsComponent.generated.h"
 
-
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class STUDYPROJECT_API USPFootstepsComponent : public UActorComponent
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-public:	
-
-	USPFootstepsComponent();
+public:
+    USPFootstepsComponent();
 
 protected:
+    virtual void BeginPlay() override;
 
-	virtual void BeginPlay() override;
+    UPROPERTY(EditDefaultsOnly)
+    FName LeftFootSocketName = TEXT("foot_l");
 
-	UPROPERTY(EditDefaultsOnly)
-	FName LeftFootSocketName = TEXT("foot_l");
+    UPROPERTY(EditDefaultsOnly)
+    FName RightFootSocketName = TEXT("foot_r");
 
-	UPROPERTY(EditDefaultsOnly)
-	FName RightFootSocketName = TEXT("foot_r");
-
-public:	
-
-	void HandleFootstep(EFoot Foot);
-
+public:
+    void HandleFootstep(EFoot Foot);
 };

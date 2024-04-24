@@ -14,11 +14,10 @@ class UGameplayAbility;
 UCLASS()
 class STUDYPROJECT_API USPCharacterMovementComponent : public UCharacterMovementComponent
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-
-	bool TryTraversal(UAbilitySystemComponent* ASC);
+    bool TryTraversal(UAbilitySystemComponent* ASC);
 
     virtual void BeginPlay() override;
 
@@ -30,15 +29,13 @@ public:
 
     UFUNCTION()
     void OnEnforcedStrafeTagChanged(const FGameplayTag CallbackTag, int32 NewCound);
-    
-protected:
 
-	UPROPERTY(EditDefaultsOnly)
+protected:
+    UPROPERTY(EditDefaultsOnly)
     TArray<TSubclassOf<UGameplayAbility>> TraversalAbilitiesOrdered;
 
     UPROPERTY(EditAnywhere)
     EMovementDirectionType MovementDirectionType;
 
     void HandleMovementDirection();
-    
 };

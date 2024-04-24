@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "AbilitySystem/Abilities/GA_Vault.h"
 #include "StudyProjectCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -35,22 +34,22 @@ bool UGA_Vault::CommitCheck(const FGameplayAbilitySpecHandle Handle, const FGame
     const bool bShowTraversal = CVar->GetInt() > 0;
 
     EDrawDebugTrace::Type DebugDrawType = bShowTraversal ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
-    
+
     int32 JumpToLocationIdx = INDEX_NONE;
 
     int i = 0;
 
     FHitResult TraceHit;
-    
+
     float MaxJumpDistance = HorizontalTraceLength;
 
-    for (;i<HorizontalTraceCount; ++i)
+    for (; i < HorizontalTraceCount; ++i)
     {
         const FVector TraceStart = StartLocation + i * UpVector * HorizontalTraceStep;
         const FVector TraceEnd = TraceStart + ForwardVector * HorizontalTraceLength;
 
-        if (UKismetSystemLibrary::SphereTraceSingleForObjects(
-                GetWorld(), TraceStart, TraceEnd, HorizontalTraceRadius, TraceObjectType, true, ActorsToIgnore, DebugDrawType, TraceHit, true))
+        if (UKismetSystemLibrary::SphereTraceSingleForObjects(GetWorld(), TraceStart, TraceEnd, HorizontalTraceRadius, TraceObjectType,
+                true, ActorsToIgnore, DebugDrawType, TraceHit, true))
         {
             if (JumpToLocationIdx == INDEX_NONE && (i < HorizontalTraceCount - i))
             {
@@ -79,7 +78,7 @@ bool UGA_Vault::CommitCheck(const FGameplayAbilitySpecHandle Handle, const FGame
 
     if (HorizontalTraceCount == i) i = HorizontalTraceCount - 1;
 
-    const float VerticalTraceLength = //
+    const float VerticalTraceLength =  //
         FMath::Abs(JumpToLocation.Z - (StartLocation - i * UpVector * HorizontalTraceStep).Z);
 
     FVector VerticalStartLocation = JumpToLocation + UpVector * VerticalTraceLength;
@@ -95,9 +94,9 @@ bool UGA_Vault::CommitCheck(const FGameplayAbilitySpecHandle Handle, const FGame
         const FVector TraceStart = VerticalStartLocation + i * ForwardVector * VerticalTraceStep;
         const FVector TraceEnd = TraceStart + UpVector * -1 * VerticalTraceLength;
 
-        if (UKismetSystemLibrary::SphereTraceSingleForObjects(GetWorld(), TraceStart, TraceEnd, //
-            HorizontalTraceRadius, TraceObjectType, //
-            true, ActorsToIgnore, DebugDrawType, TraceHit, true))
+        if (UKismetSystemLibrary::SphereTraceSingleForObjects(GetWorld(), TraceStart, TraceEnd,  //
+                HorizontalTraceRadius, TraceObjectType,                                          //
+                true, ActorsToIgnore, DebugDrawType, TraceHit, true))
         {
             JumpOverLocation = TraceHit.ImpactPoint;
             if (i == 0)
@@ -116,14 +115,14 @@ bool UGA_Vault::CommitCheck(const FGameplayAbilitySpecHandle Handle, const FGame
 
     const FVector TraceStart = JumpOverLocation + ForwardVector * VerticalTraceStep;
 
-    if (UKismetSystemLibrary::SphereTraceSingleForObjects(GetWorld(), TraceStart, JumpOverLocation, //
-            HorizontalTraceRadius, TraceObjectType, //
+    if (UKismetSystemLibrary::SphereTraceSingleForObjects(GetWorld(), TraceStart, JumpOverLocation,  //
+            HorizontalTraceRadius, TraceObjectType,                                                  //
             true, ActorsToIgnore, DebugDrawType, TraceHit, true))
     {
         JumpOverLocation = TraceHit.ImpactPoint;
     }
 
-    if(bShowTraversal)
+    if (bShowTraversal)
     {
         DrawDebugSphere(GetWorld(), JumpToLocation, 15, 16, FColor::White, false, 7);
         DrawDebugSphere(GetWorld(), JumpOverLocation, 15, 16, FColor::White, false, 7);
@@ -145,7 +144,7 @@ void UGA_Vault::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 
     AStudyProjectCharacter* Character = GetSPCharacter();
 
-    UCharacterMovementComponent* CharacterMovement = //
+    UCharacterMovementComponent* CharacterMovement =  //
         Character ? Character->GetCharacterMovement() : nullptr;
 
     if (CharacterMovement)

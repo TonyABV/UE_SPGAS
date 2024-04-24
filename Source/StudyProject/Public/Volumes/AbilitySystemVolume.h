@@ -19,16 +19,14 @@ struct FAbilityVolumeEnteredActorInfo
     TArray<FGameplayAbilitySpecHandle> AppliedAbilities;
 
     TArray<FActiveGameplayEffectHandle> AppliedEffects;
-    
 };
 
 UCLASS()
 class STUDYPROJECT_API AAbilitySystemVolume : public APhysicsVolume
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-
     AAbilitySystemVolume();
 
     virtual void ActorEnteredVolume(AActor* Other) override;
@@ -36,24 +34,23 @@ public:
     virtual void ActorLeavingVolume(AActor* Other) override;
 
     virtual void Tick(float DeltaSeconds) override;
-    
-protected:
 
+protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TArray<TSubclassOf<UGameplayEffect>> OnGoingEffectToApply;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TArray<TSubclassOf<UGameplayEffect>> OnExitEffectToApply;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool bDrawDebug = false;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TArray<FGameplayTag> GameplayEventsToSendOnEnter;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TArray<FGameplayTag> GameplayEventsToSendOnExit;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TArray<TSubclassOf<UGameplayAbility>> OnGoingAbilitiesToGive;
 
@@ -61,5 +58,4 @@ protected:
     TArray<TSubclassOf<UGameplayAbility>> PermanentAbilitiesToGive;
 
     TMap<AActor*, FAbilityVolumeEnteredActorInfo> EnteredActorsInfoMap;
-    
 };

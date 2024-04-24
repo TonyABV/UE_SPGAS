@@ -16,7 +16,6 @@ struct FInventoryListItem : public FFastArraySerializerItem
 
     UPROPERTY()
     UInventoryItemInstance* ItemInstance = nullptr;
-
 };
 
 USTRUCT(BlueprintType)
@@ -39,16 +38,17 @@ struct FInventoryList : public FFastArraySerializer
     TArray<UInventoryItemInstance*> GetAllItemInstancesWithTag(FGameplayTag InTag);
 
     TArray<UInventoryItemInstance*> GetAllAvailableInstancesOfType(TSubclassOf<UItemStaticData> InItemStaticDataClass);
-    
-protected:
 
+protected:
     UPROPERTY()
     TArray<FInventoryListItem> Items;
-
 };
 
-template<>
+template <>
 struct TStructOpsTypeTraits<FInventoryList> : public TStructOpsTypeTraitsBase2<FInventoryList>
 {
-    enum {WithNetDeltaSerializer = true};
+    enum
+    {
+        WithNetDeltaSerializer = true
+    };
 };

@@ -8,16 +8,14 @@
 #include "CharacterAnimationDataAsset.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
-class STUDYPROJECT_API  UCharacterAnimationDataAsset : public UDataAsset
+class STUDYPROJECT_API UCharacterAnimationDataAsset : public UDataAsset
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-
-	UPROPERTY(EditDefaultsOnly)
-	FCharacterAnimationData CharacterAnimationData;
-	
+    UPROPERTY(EditDefaultsOnly)
+    FCharacterAnimationData CharacterAnimationData;
 };

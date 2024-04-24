@@ -54,5 +54,4 @@ protected:
 
     FVector JumpToLocation;
     FVector JumpOverLocation;
-
 };
